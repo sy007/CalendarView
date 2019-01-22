@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CalendarView">
-        <!--weekendLable 日 一 二 三 四 五 六-->
-        <attr name="lablePaddingLeft" format="dimension" />
-        <attr name="lablePaddingTop" format="dimension"/>
-        <attr name="lablePaddingRight" format="dimension"/>
-        <attr name="lablePaddingBottom" format="dimension"/>
-        <attr name="lableWeekendTextColor" format="color" />
-        <attr name="lableTextColor" format="color" />
-        <attr name="lableTextSize" format="dimension" />
         <!--monthTitle 2019年1月-->
-        <attr name="monthTitleHeight" format="dimension" />
-        <attr name="monthTitleBgColor" format="color" />
-        <attr name="monthTitleTextColor" format="color" />
-        <attr name="monthTitleTextSize" format="dimension" />
+        <attr name="monthTitleLayout" format="reference" />
+        <attr name="monthTitleFormat" format="string" />
         <!--monthView-->
         <attr name="textColor" format="color" />
         <attr name="monthPaddingLeft" format="dimension" />
@@ -35,7 +25,15 @@
         <attr name="firstTopMargin" format="dimension" />
         <attr name="secondTopMargin" format="dimension" />
         <attr name="thirdTopMargin" format="dimension" />
-        <attr name="rowOffset" format="dimension" />
+        <attr name="dividerHeight" format="dimension" />
+        <attr name="dividerColor" format="color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="MonthLableView">
+        <attr name="lableWeekendTextColor" format="color" />
+        <attr name="lableTextColor" format="color" />
+        <attr name="lableTextSize" format="dimension" />
     </declare-styleable>
 
 </resources>

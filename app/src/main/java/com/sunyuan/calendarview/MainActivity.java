@@ -14,8 +14,6 @@ import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
     public static final String TAG =MainActivity.class
             .getSimpleName();
     @Override
@@ -28,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         CalendarDay firstSelectDay = new CalendarDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
 
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         int maxDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);

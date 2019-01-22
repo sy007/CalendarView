@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -67,7 +68,8 @@ public class MonthView extends View {
     public static final String DIS_TEXT_COLOR = "DIS_TEXT_COLOR";
     public static final String SAME_TEXT_COLOR = "SAME_TEXT_COLOR";
     public static final String SELECT_MAX_RANGE = "SELECT_MAX_RANGE";
-    public static final String ROW_OFFSET = "ROW_OFFSET";
+    public static final String DIVIDER_HEIGHT = "DIVIDER_HEIGHT";
+    public static final String DIVIDER_COLOR = "DIVIDER_COLOR";
     public static final String TOP_SIZE = "TOP_SIZE";
     public static final String TEXT_SIZE = "TEXT_SIZE";
     public static final String BOTTOM_TEXT_SIZE = "BOTTOM_TEXT_SIZE";
@@ -89,7 +91,8 @@ public class MonthView extends View {
     public static final int DEFAULT_DIS_TEXT_COLOR = Color.parseColor("#BBBBBB");
     public static final int DEFAULT_SAME_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_SELECT_MAX_RANGE = 29;
-    public static final int DEFAULT_ROW_OFFSET = 0;
+    public static final int DEFAULT_DIVIDER_HEIGHT = 0;
+    public static final int DEFAULT_DIVIDER_COLOR = 0;
 
 
     private int firstYear;
@@ -126,7 +129,10 @@ public class MonthView extends View {
     private Paint firstSelectPaint;
     private int topTextColor;
     private int thirdTopMargin;
-    private int rowOffset;
+    private int dividerHeight;
+    private int dividerColor;
+    private Paint dividerPaint;
+
 
     public MonthView(Context context) {
         this(context, null);
@@ -153,8 +159,8 @@ public class MonthView extends View {
         secondTopMargin = (int) ATTRS.get(SECOND_TOP_MARGIN);
         thirdTopMargin = (int) ATTRS.get(THIRD_TOP_MARGIN);
         selectMaxRange = (int) ATTRS.get(SELECT_MAX_RANGE);
-        rowOffset = (int) ATTRS.get(ROW_OFFSET);
-        rowHeight = (int) ATTRS.get(ROW_HEIGHT);
+        dividerHeight = (int) ATTRS.get(DIVIDER_HEIGHT);
+        dividerColor = (int) ATTRS.get(DIVIDER_COLOR);
         rowHeight = (int) ATTRS.get(ROW_HEIGHT);
         int paddingLeft = (int) ATTRS.get(MONTH_PADDING_LEFT);
         int paddingTop = (int) ATTRS.get(MONTH_PADDING_TOP);
@@ -180,8 +186,11 @@ public class MonthView extends View {
         dayPaint.setTextAlign(Paint.Align.CENTER);
         dayPaint.setTextSize(textSize);
 
-        selectPaint = new Paint();
 
+        dividerPaint = new Paint();
+        dividerPaint.setColor(dividerColor);
+
+        selectPaint = new Paint();
 
         firstSelectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         firstSelectPaint.setTextSize(topTextSize);
@@ -195,7 +204,7 @@ public class MonthView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(widthMeasureSpec, (rowNum - 1) * rowOffset + (rowNum * rowHeight) +
+        setMeasuredDimension(widthMeasureSpec, (rowNum - 1) * dividerHeight + (rowNum * rowHeight) +
                 getPaddingTop() + getPaddingBottom());
 
     }
@@ -250,7 +259,7 @@ public class MonthView extends View {
         if ((y < getPaddingTop()) || (y > getHeight() - getPaddingBottom())) {
             return null;
         }
-        int yDay = (int) ((y - getPaddingTop()) / rowHeight);
+        int yDay = (int) ((y - getPaddingTop()) / (rowHeight + dividerHeight));
 
         int day = 1 + ((int) ((x - getPaddingLeft()) * columnNum / (getWidth() - getPaddingLeft() - getPaddingRight())) - findDayOffset(year, month, 1)) +
                 yDay * columnNum;
@@ -276,6 +285,7 @@ public class MonthView extends View {
             int dayOffset = findDayOffset(year, month, day);
             int offset = dayOffset * dayWidth + paddingLeft;
             dayRang.set(offset, top, offset + dayWidth, top + rowHeight);
+
             if (isFirstDay(day) || isLastDay(day)) {
                 selectPaint.setColor(selectBgColor);
                 canvas.drawRect(dayRang, selectPaint);
@@ -357,9 +367,16 @@ public class MonthView extends View {
                             firstTopMargin + dayFirstHeight + secondTopMargin +
                             Math.abs(fm.ascent), dayPaint);
             if (columnNum - dayOffset == 1) {
-                top += (rowHeight + rowOffset);
+                top += (rowHeight + dividerHeight);
+                if (0 != dividerHeight) {
+                    drawDivider(canvas);
+                }
             }
         }
+    }
+
+    private void drawDivider(Canvas canvas) {
+        canvas.drawRect(getPaddingLeft(),dayRang.bottom,getWidth()-getPaddingRight(),dayRang.bottom+dividerHeight,dividerPaint);
     }
 
 
@@ -382,7 +399,7 @@ public class MonthView extends View {
                 dayPaint.setColor(selectRangeBgColor);
                 canvas.drawRect(selectRangeRect, dayPaint);
                 if (columnNum - dayOffset == 1) {
-                    firstRangeTop += (rowHeight + rowOffset);
+                    firstRangeTop += (rowHeight + dividerHeight);
                 }
             }
         } else {
@@ -399,7 +416,7 @@ public class MonthView extends View {
                     selectPaint.setColor(selectRangeBgColor);
                     canvas.drawRect(selectRangeRect, selectPaint);
                     if (columnNum - dayOffset == 1) {
-                        firstRangeTop += (rowHeight + rowOffset);
+                        firstRangeTop += (rowHeight + dividerHeight);
                     }
                 }
             }
@@ -412,7 +429,7 @@ public class MonthView extends View {
                     selectPaint.setColor(selectRangeBgColor);
                     canvas.drawRect(selectRangeRect, selectPaint);
                     if (columnNum - dayOffset == 1) {
-                        lastRangeTop += (rowHeight + rowOffset);
+                        lastRangeTop += (rowHeight + dividerHeight);
                     }
                 }
             }
@@ -423,7 +440,7 @@ public class MonthView extends View {
     private int getFirstRangeTop() {
         int offset = findDayOffset(firstYear, firstMonth, 1);
         int dividend = (offset + firstDay) / columnNum;
-        return dividend * rowHeight;
+        return dividend * (rowHeight + dividerHeight);
     }
 
 
@@ -441,7 +458,7 @@ public class MonthView extends View {
         if (firstDay == -1) {
             return false;
         }
-        return (dayOfYear + day - firstDayOfYear) >selectMaxRange;
+        return (dayOfYear + day - firstDayOfYear) > selectMaxRange;
     }
 
 

@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-  <com.sunyuan.calendarlibrary.CalendarView
-      android:id="@+id/calendar_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+    <com.sunyuan.calendarlibrary.MonthLableView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <com.sunyuan.calendarlibrary.CalendarView
+        android:id="@+id/calendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        sy:dividerColor="#D8D8D8"
+        sy:dividerHeight="1dp"
+        sy:monthTitleLayout="@layout/layout_month_title" />
 </LinearLayout>

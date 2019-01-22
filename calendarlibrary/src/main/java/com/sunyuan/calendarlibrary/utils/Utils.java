@@ -2,6 +2,9 @@ package com.sunyuan.calendarlibrary.utils;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * author：six
  * created by:2019-01-20
@@ -13,6 +16,12 @@ public class Utils {
         return (int) (dpValue * scale + 0.5f);
     }
 
+
+    public static String formatDate(String format, Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String dateString = formatter.format(date);
+        return dateString;
+    }
 
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
