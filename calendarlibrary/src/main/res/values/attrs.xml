@@ -2,14 +2,22 @@
 <resources>
     <declare-styleable name="CalendarView">
         <!--monthTitle 2019年1月-->
-        <attr name="monthTitleLayout" format="reference" />
-        <attr name="monthTitleFormat" format="string" />
+        <attr name="isShowMonthTitleView" format="boolean" />
         <!--monthView-->
         <attr name="textColor" format="color" />
         <attr name="monthPaddingLeft" format="dimension" />
         <attr name="monthPaddingTop" format="dimension" />
         <attr name="monthPaddingRight" format="dimension" />
         <attr name="monthPaddingBottom" format="dimension" />
+        <attr name="monthMarginLeft" format="dimension" />
+        <attr name="monthMarginTop" format="dimension" />
+        <attr name="monthMarginRight" format="dimension" />
+        <attr name="monthMarginBottom" format="dimension" />
+        <attr name="selectStyle" format="enum">
+            <enum name="rectangle" value="0" />
+            <enum name="roundRectangle" value="1" />
+        </attr>
+        <attr name="cornerRadius" format="dimension" />
         <attr name="selectTextColor" format="color" />
         <attr name="weekendTextColor" format="color" />
         <attr name="selectBgColor" format="color" />

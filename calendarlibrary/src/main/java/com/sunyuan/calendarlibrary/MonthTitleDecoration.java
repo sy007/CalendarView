@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,19 +20,29 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
     private boolean isInitHeight;
     private int monthTitleHeight;
     private Map<Integer, View> monthTitleViewMap = new HashMap<>();
+    private MonthTitleViewCallBack monthTitleViewCallBack;
 
-    public interface MonthTitleCallback {
-        View getMonthTitleView(int position);
+    public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
+        this.monthTitleViewCallBack = monthTitleViewCallBack;
+    }
+
+    public interface MonthDateCallback {
+        Date getMonthDate(int position);
+    }
+
+    public MonthTitleDecoration() {
+
     }
 
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         RecyclerView.Adapter adapter = parent.getAdapter();
-        if (adapter instanceof MonthTitleCallback) {
-            MonthTitleCallback monthTitleCallback = (MonthTitleCallback) adapter;
+        if (adapter instanceof MonthDateCallback) {
+            MonthDateCallback monthDateCallback = (MonthDateCallback) adapter;
             if (!isInitHeight) {
-                View monthTitleView = monthTitleCallback.getMonthTitleView(0);
+                Date monthDate = monthDateCallback.getMonthDate(0);
+                View monthTitleView = monthTitleViewCallBack.getMonthTitleView(0, monthDate);
                 monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                 monthTitleHeight = monthTitleView.getMeasuredHeight();
@@ -46,9 +57,9 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         RecyclerView.Adapter adapter = parent.getAdapter();
-        if (adapter instanceof MonthTitleCallback) {
+        if (adapter instanceof MonthDateCallback) {
             int childCount = parent.getChildCount();
-            MonthTitleCallback monthTitleCallback = (MonthTitleCallback) parent.getAdapter();
+            MonthDateCallback monthDateCallback = (MonthDateCallback) parent.getAdapter();
             int left = parent.getPaddingLeft();
             int right = parent.getWidth() - parent.getPaddingRight();
             int top = parent.getPaddingTop();
@@ -64,7 +75,8 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 int index = parent.getChildAdapterPosition(view);
                 View monthTitleView;
                 if (monthTitleViewMap.get(index) == null) {
-                    monthTitleView = monthTitleCallback.getMonthTitleView(index);
+                    Date monthDate = monthDateCallback.getMonthDate(index);
+                    monthTitleView = monthTitleViewCallBack.getMonthTitleView(index, monthDate);
                     monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                     monthTitleViewMap.put(index, monthTitleView);
@@ -89,7 +101,8 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    public void clear() {
+    public void destroy() {
         monthTitleViewMap.clear();
+        monthTitleViewCallBack = null;
     }
 }

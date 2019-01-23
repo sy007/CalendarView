@@ -4,17 +4,16 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.sunyuan.calendarlibrary.model.CalendarDay;
 import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
 import com.sunyuan.calendarlibrary.utils.Utils;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,43 +26,37 @@ import static com.sunyuan.calendarlibrary.MonthView.*;
  * github:https://github.com/sy007
  */
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarHolder> implements
-        MonthView.OnDayClickListener, MonthTitleDecoration.MonthTitleCallback {
-
-
+        MonthView.OnDayClickListener, MonthTitleDecoration.MonthDateCallback {
     private static final int MONTH_IN_YEAR = 12;
     private final Calendar calendar;
     private int currentMonth;
     private int currentYear;
     private CalendarSelectDay<CalendarDay> calendarSelectDay;
-    private Map<Integer, String> monthTitleMap;
-    private int monthTitleLayout;
-    private Context context;
-    private String monthTitleFormat;
-
+    private Map<Integer, Date> monthTitleMap;
+    private boolean isShowMonthTitleView;
+    private int marginLeft;
+    private int marginTop;
+    private int marginRight;
+    private int marginBottom;
 
     public CalendarAdapter(Context context, TypedArray typedArray) {
-        this.context = context;
-        parseTypedArray(context, typedArray);
         calendar = Calendar.getInstance();
         currentMonth = calendar.get(Calendar.MONTH);
         currentYear = calendar.get(Calendar.YEAR);
+        parseTypedArray(context, typedArray);
     }
 
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        if (-1 != monthTitleLayout) {
+        if (isShowMonthTitleView) {
             monthTitleMap = new HashMap<>();
-            MonthTitleDecoration  monthTitleDecoration = new MonthTitleDecoration();
-            recyclerView.addItemDecoration(monthTitleDecoration);
         }
     }
 
-
     private void parseTypedArray(Context context, TypedArray typedArray) {
-        monthTitleLayout = typedArray.getResourceId(R.styleable.CalendarView_monthTitleLayout, -1);
-        monthTitleFormat = typedArray.getString(R.styleable.CalendarView_monthTitleFormat);
+        isShowMonthTitleView = typedArray.getBoolean(R.styleable.CalendarView_isShowMonthTitleView, true);
         int textColor = typedArray.getColor(R.styleable.CalendarView_textColor, DEFAULT_TEXT_COLOR);
         int selectTextColor = typedArray.getColor(R.styleable.CalendarView_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
         int selectBgColor = typedArray.getColor(R.styleable.CalendarView_selectBgColor, DEFAULT_SELECT_BG_COLOR);
@@ -80,6 +73,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         int defaultFirstTopMargin = Utils.dip2px(context, 5);
         int defaultSecondTopMargin = Utils.dip2px(context, 5);
         int defaultThirdTopMargin = Utils.dip2px(context, 5);
+        int defaultCornerRadius = Utils.dip2px(context, 3);
         int topTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_topTextSize, defaultTopSize);
         int textSize = (int) typedArray.getDimension(R.styleable.CalendarView_textSize, defaultTextSize);
         int bottomTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_bottomTextSize, defaultBottomTextSize);
@@ -89,16 +83,25 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         int selectMaxRange = typedArray.getInteger(R.styleable.CalendarView_selectMaxRange, MonthView.DEFAULT_SELECT_MAX_RANGE);
         int dividerHeight = (int) typedArray.getDimension(R.styleable.CalendarView_dividerHeight, MonthView.DEFAULT_DIVIDER_HEIGHT);
         int dividerColor = typedArray.getColor(R.styleable.CalendarView_dividerColor, MonthView.DEFAULT_DIVIDER_COLOR);
+        int selectStyle = typedArray.getInt(R.styleable.CalendarView_selectStyle, 0);
+        int cornerRadius = (int) typedArray.getDimension(R.styleable.CalendarView_cornerRadius, defaultCornerRadius);
+
+
+        marginLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginLeft, 0);
+        marginTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginTop, 0);
+        marginRight = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginRight, 0);
+        marginBottom = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginBottom, 0);
 
         int paddingLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingLeft, 0);
         int paddingTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingTop, 0);
         int paddingRight = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingRight, 0);
         int paddingBottom = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingBottom, 0);
+        ATTRS.put(SELECT_STYLE, selectStyle);
+        ATTRS.put(CORNER_RADIUS, cornerRadius);
         ATTRS.put(MONTH_PADDING_LEFT, paddingLeft);
         ATTRS.put(MONTH_PADDING_TOP, paddingTop);
         ATTRS.put(MONTH_PADDING_RIGHT, paddingRight);
         ATTRS.put(MONTH_PADDING_BOTTOM, paddingBottom);
-
         ATTRS.put(TOP_TEXT_COLOR, topTextColor);
         ATTRS.put(TEXT_COLOR, textColor);
         ATTRS.put(SELECT_TEXT_COLOR, selectTextColor);
@@ -124,6 +127,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     public CalendarHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_month_view, viewGroup,
                 false);
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+        layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
+        view.setLayoutParams(layoutParams);
         return new CalendarAdapter.CalendarHolder(view, this);
     }
 
@@ -132,7 +138,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         int month = (currentMonth + (position % MONTH_IN_YEAR)) % MONTH_IN_YEAR;
         int year = (currentMonth + position) / MONTH_IN_YEAR + currentYear;
         if (monthTitleMap != null) {
-            monthTitleMap.put(position, getGroupName(year, month));
+            monthTitleMap.put(position, getMonthDate(year, month));
         }
         Map<String, Integer> parmas = new HashMap<>();
         if (calendarSelectDay == null) {
@@ -168,13 +174,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         calendarHolder.monthView.setParams(parmas);
     }
 
-    private String getGroupName(int year, int month) {
+    private Date getMonthDate(int year, int month) {
         Calendar calendar = this.calendar;
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        return Utils.formatDate(TextUtils.isEmpty(monthTitleFormat)?"yyyy年MM月":monthTitleFormat, calendar.getTime());
+        return calendar.getTime();
     }
+
 
     @Override
     public void onDayClick(CalendarDay calendarDay) {
@@ -215,13 +222,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     }
 
     @Override
-    public View getMonthTitleView(int position) {
-        View monthTitleView = View.inflate(context, monthTitleLayout, null);
-        TextView tvMonthTitle = monthTitleView.findViewById(R.id.tv_month_title);
-        tvMonthTitle.setText(monthTitleMap.get(position));
-        return monthTitleView;
+    public Date getMonthDate(int position) {
+        return monthTitleMap.get(position);
     }
 
+    public boolean isShowMonthTitleView() {
+        return isShowMonthTitleView;
+    }
 
     public static class CalendarHolder extends RecyclerView.ViewHolder {
 

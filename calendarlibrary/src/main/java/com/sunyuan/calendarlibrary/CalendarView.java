@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
 import com.sunyuan.calendarlibrary.utils.Utils;
 
+import java.util.Date;
+
 import static com.sunyuan.calendarlibrary.MonthLableView.*;
 
 
@@ -42,6 +44,18 @@ public class CalendarView extends RecyclerView {
         typedArray.recycle();
     }
 
+
+    public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
+        boolean isShowMonthTitleView = calendarAdapter.isShowMonthTitleView();
+        if (isShowMonthTitleView) {
+            if (monthTitleViewCallBack == null) {
+                throw new IllegalArgumentException("monthTitleViewCallBack Cannot be empty because isShowMonthTitleView = " + isShowMonthTitleView);
+            }
+        }
+        MonthTitleDecoration monthTitleDecoration = new MonthTitleDecoration();
+        monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
+        addItemDecoration(monthTitleDecoration);
+    }
 
     public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
         calendarAdapter.setOnCalendarSelectDayListener(onCalendarSelectDayListener);

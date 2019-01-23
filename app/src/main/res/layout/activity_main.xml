@@ -7,16 +7,52 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="入住:" />
+
+        <TextView
+            android:id="@+id/tv_first_select_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="离店:" />
+
+        <TextView
+            android:id="@+id/tv_last_select_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
     <com.sunyuan.calendarlibrary.MonthLableView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp" />
 
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        sy:dividerColor="#D8D8D8"
-        sy:dividerHeight="1dp"
-        sy:monthTitleLayout="@layout/layout_month_title" />
+        android:background="#FFFFFF"
+        sy:dividerHeight="5dp"
+        sy:selectMaxRange="28" />
 </LinearLayout>

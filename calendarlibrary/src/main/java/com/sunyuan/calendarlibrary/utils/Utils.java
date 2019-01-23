@@ -17,11 +17,6 @@ public class Utils {
     }
 
 
-    public static String formatDate(String format, Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        String dateString = formatter.format(date);
-        return dateString;
-    }
 
     public static int sp2px(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
