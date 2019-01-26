@@ -27,8 +27,11 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
     sy:lastSelectDayText="离店"
     sy:selectMaxRange="28" />
 ````
+
 ### XML 自定义属性
+
 MonthLableView(星期)
+------------------
 |属性 | 类型 | 描述 |
 | :------------------------- | --------- | ---------------------------------- |
 | lableWeekendTextColor | color | 周末字体颜色 |
@@ -36,6 +39,7 @@ MonthLableView(星期)
 | lableTextSize | color | 字体大小 |
 
 CalendarView(日历)
+------------------
 | 属性 | 类型 | 描述 | 
 | :------------------------- | --------- | ---------------------------------- |
 | isShowMonthTitleView | boolean | 是否显示MonthTitleView默认显示 |
