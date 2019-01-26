@@ -39,7 +39,7 @@ MonthLableView(星期)
 | lableTextSize | color | 字体大小 |
 
 CalendarView(日历)
-------------------
+
 | 属性 | 类型 | 描述 | 
 | :------------------------- | --------- | ---------------------------------- |
 | isShowMonthTitleView | boolean | 是否显示MonthTitleView默认显示 |
