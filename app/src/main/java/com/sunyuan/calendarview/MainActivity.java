@@ -35,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendar_view);
         tvFirstSelectDate = findViewById(R.id.tv_first_select_date);
         tvLastSelectDate = findViewById(R.id.tv_last_select_date);
-//        String firstSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getFirstSelectDay().toDate());
-//        String lastSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getLastSelectDay().toDate());
-//        tvFirstSelectDate.setText(firstSelectDateStr);
-//        tvLastSelectDate.setText(lastSelectDateStr);
-//        calendarView.setCalendarSelectDay(calendarSelectDay);
+        String firstSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getFirstSelectDay().toDate());
+        String lastSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getLastSelectDay().toDate());
+        tvFirstSelectDate.setText(firstSelectDateStr);
+        tvLastSelectDate.setText(lastSelectDateStr);
+        //设置初始化选中日期
+        calendarView.setCalendarSelectDay(calendarSelectDay);
         //绘制monthTitle
         calendarView.setMonthTitleViewCallBack(new MonthTitleViewCallBack() {
             @Override
