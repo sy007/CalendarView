@@ -2,16 +2,13 @@ package com.sunyuan.calendarview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.sunyuan.calendarlibrary.CalendarView;
 import com.sunyuan.calendarlibrary.MonthTitleViewCallBack;
 import com.sunyuan.calendarlibrary.model.CalendarDay;
 import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
-import com.sunyuan.calendarlibrary.CalendarView;
-import com.sunyuan.calendarlibrary.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendar_view);
         tvFirstSelectDate = findViewById(R.id.tv_first_select_date);
         tvLastSelectDate = findViewById(R.id.tv_last_select_date);
-        String firstSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getFirstSelectDay().toDate());
-        String lastSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getLastSelectDay().toDate());
-        tvFirstSelectDate.setText(firstSelectDateStr);
-        tvLastSelectDate.setText(lastSelectDateStr);
-        calendarView.setCalendarSelectDay(calendarSelectDay);
+//        String firstSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getFirstSelectDay().toDate());
+//        String lastSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getLastSelectDay().toDate());
+//        tvFirstSelectDate.setText(firstSelectDateStr);
+//        tvLastSelectDate.setText(lastSelectDateStr);
+//        calendarView.setCalendarSelectDay(calendarSelectDay);
+        //绘制monthTitle
         calendarView.setMonthTitleViewCallBack(new MonthTitleViewCallBack() {
             @Override
             public View getMonthTitleView(int position, Date date) {
@@ -52,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 return view;
             }
         });
+        //设置选中事件
         calendarView.setOnCalendarSelectDayListener(new CalendarView.OnCalendarSelectDayListener<CalendarDay>() {
             @Override
             public void onCalendarSelectDay(CalendarSelectDay<CalendarDay> calendarSelectDay) {

@@ -85,7 +85,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         int dividerColor = typedArray.getColor(R.styleable.CalendarView_dividerColor, MonthView.DEFAULT_DIVIDER_COLOR);
         int selectStyle = typedArray.getInt(R.styleable.CalendarView_selectStyle, 0);
         int cornerRadius = (int) typedArray.getDimension(R.styleable.CalendarView_cornerRadius, defaultCornerRadius);
-
+        String firstSelectDayText = typedArray.getString(R.styleable.CalendarView_firstSelectDayText);
+        String lastSelectDayText = typedArray.getString(R.styleable.CalendarView_lastSelectDayText);
 
         marginLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginLeft, 0);
         marginTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginTop, 0);
@@ -120,6 +121,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         ATTRS.put(SECOND_TOP_MARGIN, secondTopMargin);
         ATTRS.put(THIRD_TOP_MARGIN, thirdTopMargin);
         ATTRS.put(ROW_HEIGHT, rowHeight);
+        ATTRS.put(FIRST_SELECT_DAY_TEXT, firstSelectDayText);
+        ATTRS.put(LAST_SELECT_DAY_TEXT, lastSelectDayText);
     }
 
     @NonNull
@@ -187,9 +190,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     public void onDayClick(CalendarDay calendarDay) {
         CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
         if (firstSelectDay != null) {
-            if (calendarDay.getYear() <= firstSelectDay.getYear()
-                    && calendarDay.getMonth() <= firstSelectDay.getMonth()
-                    && calendarDay.getDay() <= firstSelectDay.getDay()) {
+            if (calendarDay.toDate().before(firstSelectDay.toDate())) {
                 calendarSelectDay.setFirstSelectDay(calendarDay);
             } else {
                 calendarSelectDay.setLastSelectDay(calendarDay);

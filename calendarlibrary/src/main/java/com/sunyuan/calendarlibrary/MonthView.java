@@ -84,6 +84,8 @@ public class MonthView extends View {
     public static final String MONTH_PADDING_BOTTOM = "MONTH_PADDING_BOTTOM";
     public static final String SELECT_STYLE = "SELECT_STYLE";
     public static final String CORNER_RADIUS = "CORNER_RADIUS";
+    public static final String FIRST_SELECT_DAY_TEXT = "FIRST_SELECT_DAY_TEXT";
+    public static final String LAST_SELECT_DAY_TEXT = "LAST_SELECT_DAY_TEXT";
 
     public static final int DEFAULT_TOP_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_TEXT_COLOR = Color.parseColor("#000000");
@@ -93,10 +95,10 @@ public class MonthView extends View {
     public static final int DEFAULT_WEEKEND_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_DIS_TEXT_COLOR = Color.parseColor("#BBBBBB");
     public static final int DEFAULT_SAME_TEXT_COLOR = Color.parseColor("#FF6E00");
-    public static final int DEFAULT_SELECT_MAX_RANGE = 29;
+    public static final int DEFAULT_SELECT_MAX_RANGE = -1;
     public static final int DEFAULT_DIVIDER_HEIGHT = 0;
     public static final int DEFAULT_DIVIDER_COLOR = 0;
-
+    public static final String TODAY_TEXT = "今天";
 
     private int firstYear;
     private int firstMonth;
@@ -118,9 +120,7 @@ public class MonthView extends View {
     private int selectMaxRange;
     private Paint.FontMetrics fm;
 
-    public static final String IN_DAY_TEXT = "入住";
-    public static final String OUT_DAY_TEXT = "离开";
-    public static final String TODAY_TEXT = "今天";
+
     private int firstDayOfYear;
     private int dayOfYear;
     private int lastDayOfYear;
@@ -137,6 +137,8 @@ public class MonthView extends View {
     private Paint dividerPaint;
     private int selectStyle;
     private int cornerRadius;
+    private String firstSelectDayText;
+    private String lastSelectDayText;
 
 
     public MonthView(Context context) {
@@ -169,6 +171,9 @@ public class MonthView extends View {
         rowHeight = (int) ATTRS.get(ROW_HEIGHT);
         selectStyle = (int) ATTRS.get(SELECT_STYLE);
         cornerRadius = (int) ATTRS.get(CORNER_RADIUS);
+        firstSelectDayText = (String) ATTRS.get(FIRST_SELECT_DAY_TEXT);
+        lastSelectDayText = (String) ATTRS.get(LAST_SELECT_DAY_TEXT);
+
         int paddingLeft = (int) ATTRS.get(MONTH_PADDING_LEFT);
         int paddingTop = (int) ATTRS.get(MONTH_PADDING_TOP);
         int paddingRight = (int) ATTRS.get(MONTH_PADDING_RIGHT);
@@ -281,7 +286,6 @@ public class MonthView extends View {
 
     @SuppressLint("DefaultLocale")
     private void drawDays(Canvas canvas) {
-
         String dayText;
         int dayOfMonth = dayOfMonth(year, month);
         int paddingLeft = getPaddingLeft();
@@ -302,43 +306,15 @@ public class MonthView extends View {
             if (isSameDay(day)) {
                 dayText = TODAY_TEXT;
             }
-            if (isFirstDay(day)) {
-                thirdPaint.getFontMetrics(fm);
+            if (isFirstDay(day) || isLastDay(day)) {
                 dayPaint.setColor(selectTextColor);
-                thirdPaint.setColor(selectTextColor);
-
-                firstSelectPaint.getFontMetrics(fm);
-                float firstAscent = fm.ascent;
-                float firstDescent = fm.descent;
-                float firstHeight = firstDescent - firstAscent;
-
-                dayPaint.getFontMetrics(fm);
-                float secondAscent = fm.ascent;
-                float secondDescent = fm.descent;
-                float secondHeight = secondDescent - secondAscent;
-
-                thirdPaint.getFontMetrics(fm);
-                canvas.drawText(IN_DAY_TEXT, dayRang.centerX(), dayRang.top + firstTopMargin + firstHeight +
-                                secondTopMargin + secondHeight + thirdTopMargin + Math.abs(fm.ascent),
-                        thirdPaint);
-            } else if (isLastDay(day)) {
-                thirdPaint.getFontMetrics(fm);
-                dayPaint.setColor(selectTextColor);
-                thirdPaint.setColor(selectTextColor);
-                firstSelectPaint.getFontMetrics(fm);
-                float firstAscent = fm.ascent;
-                float firstDescent = fm.descent;
-                float firstHeight = firstDescent - firstAscent;
-
-                dayPaint.getFontMetrics(fm);
-                float daySecondAscent = fm.ascent;
-                float daySecondDescent = fm.descent;
-                float daySecondHeight = daySecondDescent - daySecondAscent;
-
-                thirdPaint.getFontMetrics(fm);
-                canvas.drawText(OUT_DAY_TEXT, dayRang.centerX(), dayRang.top + firstTopMargin + firstHeight +
-                                secondTopMargin + daySecondHeight + thirdTopMargin + Math.abs(fm.ascent),
-                        thirdPaint);
+                firstSelectPaint.setColor(selectTextColor);
+                if (isFirstDay(day) && !TextUtils.isEmpty(firstSelectDayText)) {
+                    drawSelectDayText(canvas, firstSelectDayText);
+                }
+                if (isLastDay(day) && !TextUtils.isEmpty(lastSelectDayText)) {
+                    drawSelectDayText(canvas, lastSelectDayText);
+                }
             } else {
                 if (isPreDay(day)) {
                     firstSelectPaint.setColor(disTextColor);
@@ -381,6 +357,29 @@ public class MonthView extends View {
                 }
             }
         }
+    }
+
+    /**
+     * 绘制底部选中文案
+     *
+     * @param canvas
+     * @param selectDayText
+     */
+    private void drawSelectDayText(Canvas canvas, String selectDayText) {
+        firstSelectPaint.getFontMetrics(fm);
+        thirdPaint.getFontMetrics(fm);
+        thirdPaint.setColor(selectTextColor);
+        float firstAscent = fm.ascent;
+        float firstDescent = fm.descent;
+        float firstHeight = firstDescent - firstAscent;
+        dayPaint.getFontMetrics(fm);
+        float daySecondAscent = fm.ascent;
+        float daySecondDescent = fm.descent;
+        float daySecondHeight = daySecondDescent - daySecondAscent;
+        thirdPaint.getFontMetrics(fm);
+        canvas.drawText(selectDayText, dayRang.centerX(), dayRang.top + firstTopMargin + firstHeight +
+                        secondTopMargin + daySecondHeight + thirdTopMargin + Math.abs(fm.ascent),
+                thirdPaint);
     }
 
     private void drawSelectRange(Canvas canvas, Rect dayRang, Paint selectPaint) {
@@ -475,7 +474,7 @@ public class MonthView extends View {
 
 
     private boolean isMaxRange(int day) {
-        if (firstDay == -1) {
+        if (firstDay == -1 || selectMaxRange == -1) {
             return false;
         }
         return (dayOfYear + day - firstDayOfYear) > selectMaxRange;

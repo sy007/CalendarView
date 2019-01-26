@@ -35,6 +35,8 @@
         <attr name="thirdTopMargin" format="dimension" />
         <attr name="dividerHeight" format="dimension" />
         <attr name="dividerColor" format="color" />
+        <attr name="firstSelectDayText" format="string" />
+        <attr name="lastSelectDayText" format="string" />
     </declare-styleable>
 
 

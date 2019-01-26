@@ -54,5 +54,7 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         sy:dividerHeight="5dp"
+        sy:firstSelectDayText="入住"
+        sy:lastSelectDayText="离店"
         sy:selectMaxRange="28" />
 </LinearLayout>

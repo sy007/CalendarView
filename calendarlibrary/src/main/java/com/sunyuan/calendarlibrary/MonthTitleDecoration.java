@@ -49,7 +49,7 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 isInitHeight = true;
             }
         }
-        //预留Header的高度
+        //预留MonthTitleView的高度
         outRect.top = monthTitleHeight;
     }
 
@@ -101,6 +101,9 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    /**
+     * 释放资源
+     */
     public void destroy() {
         monthTitleViewMap.clear();
         monthTitleViewCallBack = null;

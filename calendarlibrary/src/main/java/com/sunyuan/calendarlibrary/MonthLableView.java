@@ -14,6 +14,11 @@ import com.sunyuan.calendarlibrary.utils.Utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * author：six
+ * created by:2019-01-20
+ * github:https://github.com/sy007
+ */
 public class MonthLableView extends View {
 
 
@@ -27,9 +32,9 @@ public class MonthLableView extends View {
     private Paint.FontMetrics fontMetrics;
     private Paint lablePaint;
     private Calendar calendar;
-    private int columnNum =7;
+    private int columnNum = 7;
     private int lableWidht;
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT =new SimpleDateFormat("EEEEE");
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("EEEEE");
     private Rect lableRect;
 
     public MonthLableView(Context context) {
@@ -63,24 +68,24 @@ public class MonthLableView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         lablePaint.getFontMetrics(fontMetrics);
-        setMeasuredDimension(widthMeasureSpec, (int) (fontMetrics.descent-fontMetrics.ascent)+getPaddingTop()+getPaddingBottom());
+        setMeasuredDimension(widthMeasureSpec, (int) (fontMetrics.descent - fontMetrics.ascent) + getPaddingTop() + getPaddingBottom());
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        lableWidht =(w-getPaddingLeft()-getPaddingRight())/columnNum;
+        lableWidht = (w - getPaddingLeft() - getPaddingRight()) / columnNum;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         lablePaint.getFontMetrics(fontMetrics);
-        int left =getPaddingLeft();
-        int top =getPaddingTop();
-        int lableHeight =getHeight()-getPaddingTop()-getPaddingBottom();
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        int lableHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         for (int i = 0; i < columnNum; i++) {
-            lableRect.set(left,top,left+lableWidht,top+lableHeight);
+            lableRect.set(left, top, left + lableWidht, top + lableHeight);
             if (i == 0 || i == columnNum - 1) {
                 lablePaint.setColor(weekendTextColor);
             } else {
@@ -91,8 +96,8 @@ public class MonthLableView extends View {
             String dayLabelText = SIMPLE_DATE_FORMAT.format(calendar.getTime());
             float distance = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent;
             float baseline = lableRect.centerY() + distance;
-            canvas.drawText(dayLabelText, lableRect.centerX(),baseline, lablePaint);
-            left+=lableWidht;
+            canvas.drawText(dayLabelText, lableRect.centerX(), baseline, lablePaint);
+            left += lableWidht;
         }
     }
 }

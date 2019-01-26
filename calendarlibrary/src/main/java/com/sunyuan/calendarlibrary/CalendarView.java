@@ -44,17 +44,36 @@ public class CalendarView extends RecyclerView {
         typedArray.recycle();
     }
 
-
+    /**
+     * 设置RecycleView itemDecoration,设置数据时会回调MonthTitleViewCallBack中getMonthTitleView方法
+     *
+     * @param monthTitleViewCallBack
+     */
     public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
         boolean isShowMonthTitleView = calendarAdapter.isShowMonthTitleView();
-        if (isShowMonthTitleView) {
-            if (monthTitleViewCallBack == null) {
-                throw new IllegalArgumentException("monthTitleViewCallBack Cannot be empty because isShowMonthTitleView = " + isShowMonthTitleView);
-            }
+        if (!isShowMonthTitleView && monthTitleViewCallBack != null) {
+            throw new IllegalArgumentException(
+                    "You need to use the monthTitle function, but the property isShowMonthTitleView you set is false");
         }
         MonthTitleDecoration monthTitleDecoration = new MonthTitleDecoration();
         monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
         addItemDecoration(monthTitleDecoration);
+    }
+
+    /**
+     * 释放 MonthTitleDecoration中资源
+     */
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        int itemDecorationCount = getItemDecorationCount();
+        for (int itemDecorationIndex = 0; itemDecorationIndex < itemDecorationCount; itemDecorationIndex++) {
+            ItemDecoration itemDecoration = getItemDecorationAt(itemDecorationIndex);
+            if (itemDecoration instanceof MonthTitleDecoration) {
+                ((MonthTitleDecoration) itemDecoration).destroy();
+                break;
+            }
+        }
     }
 
     public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
