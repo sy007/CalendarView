@@ -31,7 +31,7 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
 ### XML 自定义属性
 
 MonthLableView(星期)
-------------------
+
 |属性 | 类型 | 描述 |
 | :------------------------- | --------- | ---------------------------------- |
 | lableWeekendTextColor | color | 周末字体颜色 |
