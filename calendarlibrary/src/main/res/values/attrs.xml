@@ -37,6 +37,7 @@
         <attr name="dividerColor" format="color" />
         <attr name="firstSelectDayText" format="string" />
         <attr name="lastSelectDayText" format="string" />
+        <attr name="isSingleSelect" format="boolean" />
     </declare-styleable>
 
 

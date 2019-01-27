@@ -6,7 +6,7 @@
     android:background="#8CBBBBBB"
     android:gravity="center"
     android:orientation="vertical">
-    <!--id 必须保持一致-->
+
     <TextView
         android:id="@+id/tv_month_title"
         android:layout_width="wrap_content"

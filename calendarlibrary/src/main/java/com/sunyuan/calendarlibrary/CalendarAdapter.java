@@ -38,6 +38,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     private int marginTop;
     private int marginRight;
     private int marginBottom;
+    private boolean isSingleSelect;
 
     public CalendarAdapter(Context context, TypedArray typedArray) {
         calendar = Calendar.getInstance();
@@ -57,6 +58,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     private void parseTypedArray(Context context, TypedArray typedArray) {
         isShowMonthTitleView = typedArray.getBoolean(R.styleable.CalendarView_isShowMonthTitleView, true);
+        isSingleSelect = typedArray.getBoolean(R.styleable.CalendarView_isSingleSelect, false);
         int textColor = typedArray.getColor(R.styleable.CalendarView_textColor, DEFAULT_TEXT_COLOR);
         int selectTextColor = typedArray.getColor(R.styleable.CalendarView_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
         int selectBgColor = typedArray.getColor(R.styleable.CalendarView_selectBgColor, DEFAULT_SELECT_BG_COLOR);
@@ -123,6 +125,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         ATTRS.put(ROW_HEIGHT, rowHeight);
         ATTRS.put(FIRST_SELECT_DAY_TEXT, firstSelectDayText);
         ATTRS.put(LAST_SELECT_DAY_TEXT, lastSelectDayText);
+        ATTRS.put(IS_SINGLE_SELECT, isSingleSelect);
     }
 
     @NonNull
@@ -189,14 +192,18 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     @Override
     public void onDayClick(CalendarDay calendarDay) {
         CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
-        if (firstSelectDay != null) {
-            if (calendarDay.toDate().before(firstSelectDay.toDate())) {
-                calendarSelectDay.setFirstSelectDay(calendarDay);
-            } else {
-                calendarSelectDay.setLastSelectDay(calendarDay);
-            }
-        } else {
+        if (isSingleSelect) {
             calendarSelectDay.setFirstSelectDay(calendarDay);
+        } else {
+            if (firstSelectDay != null) {
+                if (calendarDay.toDate().before(firstSelectDay.toDate())) {
+                    calendarSelectDay.setFirstSelectDay(calendarDay);
+                } else {
+                    calendarSelectDay.setLastSelectDay(calendarDay);
+                }
+            } else {
+                calendarSelectDay.setFirstSelectDay(calendarDay);
+            }
         }
         if (calendarSelectDayListener != null) {
             calendarSelectDayListener.onCalendarSelectDay(calendarSelectDay);

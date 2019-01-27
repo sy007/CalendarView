@@ -87,6 +87,13 @@ public class CalendarView extends RecyclerView {
 
 
     public interface OnCalendarSelectDayListener<K> {
+        /**
+         * 回调选中日期
+         * 当isSingleSelect为true时,calendarSelectDay中firstSelectDay为单选后的值lastSelectDay为null。
+         * 当isSingleSelect为false时,calendarSelectDay中firstSelectDay为第一次选择的日期,lastSelectDay为最后一次选择的日期
+         *
+         * @param calendarSelectDay
+         */
         void onCalendarSelectDay(CalendarSelectDay<K> calendarSelectDay);
     }
 }

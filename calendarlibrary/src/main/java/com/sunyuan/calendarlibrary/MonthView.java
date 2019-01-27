@@ -86,6 +86,7 @@ public class MonthView extends View {
     public static final String CORNER_RADIUS = "CORNER_RADIUS";
     public static final String FIRST_SELECT_DAY_TEXT = "FIRST_SELECT_DAY_TEXT";
     public static final String LAST_SELECT_DAY_TEXT = "LAST_SELECT_DAY_TEXT";
+    public static final String IS_SINGLE_SELECT = "IS_SINGLE_SELECT";
 
     public static final int DEFAULT_TOP_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_TEXT_COLOR = Color.parseColor("#000000");
@@ -139,6 +140,7 @@ public class MonthView extends View {
     private int cornerRadius;
     private String firstSelectDayText;
     private String lastSelectDayText;
+    private boolean isSingleSelect;
 
 
     public MonthView(Context context) {
@@ -173,7 +175,7 @@ public class MonthView extends View {
         cornerRadius = (int) ATTRS.get(CORNER_RADIUS);
         firstSelectDayText = (String) ATTRS.get(FIRST_SELECT_DAY_TEXT);
         lastSelectDayText = (String) ATTRS.get(LAST_SELECT_DAY_TEXT);
-
+        isSingleSelect = (boolean) ATTRS.get(IS_SINGLE_SELECT);
         int paddingLeft = (int) ATTRS.get(MONTH_PADDING_LEFT);
         int paddingTop = (int) ATTRS.get(MONTH_PADDING_TOP);
         int paddingRight = (int) ATTRS.get(MONTH_PADDING_RIGHT);
@@ -232,7 +234,7 @@ public class MonthView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawDays(canvas);
-        if (lastDay != -1 && selectStyle >= 0) {
+        if (!isSingleSelect && lastDay != -1 && selectStyle >= 0) {
             drawRange(canvas);
         }
     }
@@ -332,7 +334,7 @@ public class MonthView extends View {
                     }
                 }
             }
-            if (isMaxRange(day)) {
+            if (!isSingleSelect && isMaxRange(day)) {
                 firstSelectPaint.setColor(disTextColor);
                 dayPaint.setColor(disTextColor);
             }
