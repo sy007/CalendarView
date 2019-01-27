@@ -6,6 +6,7 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
 - [x] 行间距以及颜色设置
 - [x] 最大可以选择多少天
 - [x] 悬停月份展示
+- [x] 单选和范围选择
 ## Demo
 ![image](https://i.loli.net/2019/01/26/5c4c547a69718.gif)
 ## 使用
@@ -73,6 +74,7 @@ CalendarView(日历)
 | lastSelectDayText | string | 最后一次选中底部文案 |
 | selectStyle | enum | 选中样式(rectangle 矩形  roundRectangle 圆角矩形) |
 | cornerRadius | dimension | 当选中为圆角矩形时圆角半径 |
+| isSingleSelect | boolean | 是否单选默认为范围选择 |
 
 ### 代码
 ````java
