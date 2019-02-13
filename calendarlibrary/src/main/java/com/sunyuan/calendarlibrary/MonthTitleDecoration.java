@@ -40,7 +40,7 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.Adapter adapter = parent.getAdapter();
         if (adapter instanceof MonthDateCallback) {
             MonthDateCallback monthDateCallback = (MonthDateCallback) adapter;
-            if (!isInitHeight) {
+            if (!isInitHeight && monthTitleViewCallBack != null) {
                 Date monthDate = monthDateCallback.getMonthDate(0);
                 View monthTitleView = monthTitleViewCallBack.getMonthTitleView(0, monthDate);
                 monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -74,7 +74,7 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 View view = parent.getChildAt(i);
                 int index = parent.getChildAdapterPosition(view);
                 View monthTitleView;
-                if (monthTitleViewMap.get(index) == null) {
+                if (monthTitleViewMap.get(index) == null && monthTitleViewCallBack != null) {
                     Date monthDate = monthDateCallback.getMonthDate(index);
                     monthTitleView = monthTitleViewCallBack.getMonthTitleView(index, monthDate);
                     monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),

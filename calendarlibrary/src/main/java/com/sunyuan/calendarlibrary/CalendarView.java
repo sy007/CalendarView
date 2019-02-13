@@ -51,13 +51,11 @@ public class CalendarView extends RecyclerView {
      */
     public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
         boolean isShowMonthTitleView = calendarAdapter.isShowMonthTitleView();
-        if (!isShowMonthTitleView && monthTitleViewCallBack != null) {
-            throw new IllegalArgumentException(
-                    "You need to use the monthTitle function, but the property isShowMonthTitleView you set is false");
+        if (isShowMonthTitleView) {
+            MonthTitleDecoration monthTitleDecoration = new MonthTitleDecoration();
+            monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
+            addItemDecoration(monthTitleDecoration);
         }
-        MonthTitleDecoration monthTitleDecoration = new MonthTitleDecoration();
-        monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
-        addItemDecoration(monthTitleDecoration);
     }
 
     /**
@@ -76,7 +74,8 @@ public class CalendarView extends RecyclerView {
         }
     }
 
-    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
+    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener
+                                                       onCalendarSelectDayListener) {
         calendarAdapter.setOnCalendarSelectDayListener(onCalendarSelectDayListener);
     }
 
@@ -96,4 +95,6 @@ public class CalendarView extends RecyclerView {
          */
         void onCalendarSelectDay(CalendarSelectDay<K> calendarSelectDay);
     }
+
+
 }
