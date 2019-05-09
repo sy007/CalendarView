@@ -2,19 +2,15 @@ package com.sunyuan.calendarlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.util.Log;
 
+import com.sunyuan.calendarlibrary.model.CalendarDay;
 import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
-import com.sunyuan.calendarlibrary.utils.Utils;
-
-import java.util.Date;
-
-import static com.sunyuan.calendarlibrary.MonthLableView.*;
 
 
 /**
@@ -25,6 +21,7 @@ import static com.sunyuan.calendarlibrary.MonthLableView.*;
 public class CalendarView extends RecyclerView {
 
 
+    public static final String TAG = CalendarView.class.getSimpleName();
     private CalendarAdapter calendarAdapter;
 
     public CalendarView(Context context) {
@@ -74,27 +71,25 @@ public class CalendarView extends RecyclerView {
         }
     }
 
-    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener
-                                                       onCalendarSelectDayListener) {
+
+    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
         calendarAdapter.setOnCalendarSelectDayListener(onCalendarSelectDayListener);
     }
 
+
     public void setCalendarSelectDay(CalendarSelectDay calendarSelectDay) {
         calendarAdapter.setCalendarSelectDay(calendarSelectDay);
-        calendarAdapter.notifyDataSetChanged();
     }
 
 
-    public interface OnCalendarSelectDayListener<K> {
-        /**
-         * 回调选中日期
-         * 当isSingleSelect为true时,calendarSelectDay中firstSelectDay为单选后的值lastSelectDay为null。
-         * 当isSingleSelect为false时,calendarSelectDay中firstSelectDay为第一次选择的日期,lastSelectDay为最后一次选择的日期
-         *
-         * @param calendarSelectDay
-         */
-        void onCalendarSelectDay(CalendarSelectDay<K> calendarSelectDay);
+    public void refresh() {
+        calendarAdapter.refresh();
     }
 
 
+    public int covertToPosition(@NonNull CalendarDay calendarDay) {
+        int position = calendarAdapter.covertToPosition(calendarDay);
+        Log.d(TAG, "covertToPosition:" + position);
+        return position;
+    }
 }

@@ -25,7 +25,7 @@ import static com.sunyuan.calendarlibrary.MonthView.*;
  * created by:2019-01-20
  * github:https://github.com/sy007
  */
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarHolder> implements
+final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarHolder> implements
         MonthView.OnDayClickListener, MonthTitleDecoration.MonthDateCallback {
     private static final int MONTH_IN_YEAR = 12;
     private final Calendar calendar;
@@ -33,6 +33,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     private int currentYear;
     private CalendarSelectDay<CalendarDay> calendarSelectDay;
     private Map<Integer, Date> monthTitleMap;
+    private Map<CalendarDay, Integer> calendarDayToPositionMap = new HashMap<>();
     private boolean isShowMonthTitleView;
     private int marginLeft;
     private int marginTop;
@@ -146,6 +147,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         if (monthTitleMap != null) {
             monthTitleMap.put(position, getMonthDate(year, month));
         }
+        calendarDayToPositionMap.put(new CalendarDay(year, month, -1), position);
         Map<String, Integer> parmas = new HashMap<>();
         if (calendarSelectDay == null) {
             calendarSelectDay = new CalendarSelectDay<>();
@@ -196,10 +198,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             calendarSelectDay.setFirstSelectDay(calendarDay);
         } else {
             if (firstSelectDay != null) {
-                if (calendarDay.toDate().before(firstSelectDay.toDate())) {
+                CalendarDay lastSelectDay = calendarSelectDay.getLastSelectDay();
+                if (lastSelectDay != null) {
                     calendarSelectDay.setFirstSelectDay(calendarDay);
+                    calendarSelectDay.setLastSelectDay(null);
                 } else {
-                    calendarSelectDay.setLastSelectDay(calendarDay);
+                    if (calendarDay.toDate().before(firstSelectDay.toDate())) {
+                        calendarSelectDay.setFirstSelectDay(calendarDay);
+                    } else {
+                        calendarSelectDay.setLastSelectDay(calendarDay);
+                    }
                 }
             } else {
                 calendarSelectDay.setFirstSelectDay(calendarDay);
@@ -212,15 +220,29 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     }
 
 
-    private CalendarView.OnCalendarSelectDayListener calendarSelectDayListener;
+    private OnCalendarSelectDayListener calendarSelectDayListener;
 
-    public void setOnCalendarSelectDayListener(CalendarView.OnCalendarSelectDayListener onCalendarSelectDayListener) {
+
+    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
         this.calendarSelectDayListener = onCalendarSelectDayListener;
     }
 
 
     public void setCalendarSelectDay(CalendarSelectDay calendarSelectDay) {
         this.calendarSelectDay = calendarSelectDay;
+    }
+
+
+    public void refresh() {
+        notifyDataSetChanged();
+    }
+
+
+    public int covertToPosition(CalendarDay calendarDay) {
+        int year = calendarDay.getYear();
+        int month = calendarDay.getMonth();
+        int position = (year * MONTH_IN_YEAR + month) - (currentYear * MONTH_IN_YEAR + currentMonth);
+        return position > MONTH_IN_YEAR ? 0 : position;
     }
 
 

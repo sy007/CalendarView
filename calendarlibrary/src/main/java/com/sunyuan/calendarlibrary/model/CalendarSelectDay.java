@@ -7,8 +7,7 @@ import java.io.Serializable;
  * created by:2019-01-20
  * github:https://github.com/sy007
  */
-public class CalendarSelectDay <K> implements Serializable {
-
+public class CalendarSelectDay<K> implements Serializable {
     private K firstSelectDay;
     private K lastSelectDay;
 

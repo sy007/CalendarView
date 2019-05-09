@@ -3,6 +3,7 @@ package com.sunyuan.calendarlibrary.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * author：six
@@ -54,28 +55,19 @@ public class CalendarDay implements Serializable {
         this.day = day;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CalendarDay)) return false;
         CalendarDay that = (CalendarDay) o;
         return getYear() == that.getYear() &&
-                getMonth() == that.getMonth() &&
-                getDay() == that.getDay();
+                getMonth() == that.getMonth();
     }
 
     @Override
     public int hashCode() {
-        return hashCode(getYear(), getMonth(), getDay());
-    }
-
-    public static int hashCode(Object... values) {
-        if (values == null)
-            return 0;
-        int result = 1;
-        for (Object element : values)
-            result = 31 * result + (element == null ? 0 : element.hashCode());
-        return result;
+        return Objects.hash(getYear(), getMonth());
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.sunyuan.calendarlibrary.utils.LunarSolarConverter;
 import com.sunyuan.calendarlibrary.utils.Solar;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +40,12 @@ public class MonthView extends View {
     private int dayWidth;
     private Paint dayPaint;
     private Paint thirdPaint;
-    private int currentYear;
-    private int currentMonth;
-    private int currentDay;
+    private int toYear;
+    private int toMonth;
+    private int toDay;
     private Rect dayRang;
+
+    private static final long DAY_TIME = 1000 * 60 * 60 * 24L;
 
     /**
      * 日历参数
@@ -121,10 +124,6 @@ public class MonthView extends View {
     private int selectMaxRange;
     private Paint.FontMetrics fm;
 
-
-    private int firstDayOfYear;
-    private int dayOfYear;
-    private int lastDayOfYear;
     private Paint selectPaint;
     private Rect selectRangeRect;
     private int selectRangeBgColor;
@@ -141,6 +140,8 @@ public class MonthView extends View {
     private String firstSelectDayText;
     private String lastSelectDayText;
     private boolean isSingleSelect;
+    private long firstTotalDay;
+    private long currentTotalDay;
 
 
     public MonthView(Context context) {
@@ -181,12 +182,14 @@ public class MonthView extends View {
         int paddingRight = (int) ATTRS.get(MONTH_PADDING_RIGHT);
         int paddingBottom = (int) ATTRS.get(MONTH_PADDING_BOTTOM);
         setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-
         calendar = Calendar.getInstance();
-        currentYear = calendar.get(Calendar.YEAR);
-        currentMonth = calendar.get(Calendar.MONTH);
-        currentDay = calendar.get(Calendar.DATE);
-
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        toYear = calendar.get(Calendar.YEAR);
+        toMonth = calendar.get(Calendar.MONTH);
+        toDay = calendar.get(Calendar.DATE);
         solar = new Solar();
         dayRang = new Rect();
         selectRangeRect = new Rect();
@@ -384,18 +387,6 @@ public class MonthView extends View {
                 thirdPaint);
     }
 
-    private void drawSelectRange(Canvas canvas, Rect dayRang, Paint selectPaint) {
-        switch (selectStyle) {
-            case 0:
-                canvas.drawRect(dayRang, selectPaint);
-                break;
-            case 1:
-                RectF rectF = new RectF(dayRang);
-                canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, selectPaint);
-                break;
-        }
-    }
-
     private void drawDivider(Canvas canvas) {
         canvas.drawRect(getPaddingLeft(), dayRang.bottom, getWidth() - getPaddingRight(), dayRang.bottom + dividerHeight, dividerPaint);
     }
@@ -411,6 +402,7 @@ public class MonthView extends View {
     }
 
     private void drawRange(Canvas canvas) {
+        //选择同一个月
         if (isFirstMonth() && isLastMonth()) {
             int firstRangeTop = getFirstRangeTop() + getPaddingTop();
             for (int day = firstDay + 1; day < lastDay; day++) {
@@ -424,6 +416,8 @@ public class MonthView extends View {
                 }
             }
         } else {
+            //选择不同月
+            //绘制第一次选择的月份 选中范围
             if (isFirstMonth()) {
                 Calendar calendar = this.calendar;
                 calendar.set(Calendar.YEAR, firstYear);
@@ -441,6 +435,7 @@ public class MonthView extends View {
                     }
                 }
             }
+            //绘制最后一次选择的月份 选中范围
             if (isLastMonth()) {
                 int lastRangeTop = getPaddingTop();
                 for (int day = 1; day < lastDay; day++) {
@@ -454,6 +449,38 @@ public class MonthView extends View {
                     }
                 }
             }
+            //绘制中间月份      选中范围
+            if (isDrawSelectRangeOfMiddleStatus()) {
+                int top = getPaddingTop();
+                Calendar calendar = this.calendar;
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                int monthMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                for (int day = 1; day <= monthMaxDay; day++) {
+                    int dayOffset = findDayOffset(firstYear, firstMonth, day);
+                    int offset = dayOffset * dayWidth + getPaddingLeft();
+                    selectRangeRect.set(offset, top, offset + dayWidth, top + rowHeight);
+                    selectPaint.setColor(selectRangeBgColor);
+                    drawSelectRange(canvas, selectRangeRect, selectPaint);
+                    if (columnNum - dayOffset == 1) {
+                        top += (rowHeight + dividerHeight);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    private void drawSelectRange(Canvas canvas, Rect dayRang, Paint selectPaint) {
+        switch (selectStyle) {
+            case 0:
+                canvas.drawRect(dayRang, selectPaint);
+                break;
+            case 1:
+                RectF rectF = new RectF(dayRang);
+                canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, selectPaint);
+                break;
         }
     }
 
@@ -466,20 +493,27 @@ public class MonthView extends View {
 
 
     private boolean isSameDay(int day) {
-        return year == currentYear && month == currentMonth && day == currentDay;
+        return year == toYear && month == toMonth && day == toDay;
     }
 
     private boolean isPreDay(int day) {
-        return year <= currentYear && month <= currentMonth
-                && day < currentDay;
+        return year <= toYear && month <= toMonth
+                && day < toDay;
     }
 
+
+    private boolean isDrawSelectRangeOfMiddleStatus() {
+        int totalMonth = year * 12 + month;
+        int firstTotalMonth = firstYear * 12 + firstMonth;
+        int lastTotalMonth = lastYear * 12 + lastMonth;
+        return totalMonth > firstTotalMonth && totalMonth < lastTotalMonth;
+    }
 
     private boolean isMaxRange(int day) {
         if (firstDay == -1 || selectMaxRange == -1) {
             return false;
         }
-        return (dayOfYear + day - firstDayOfYear) > selectMaxRange;
+        return (currentTotalDay + day - 1 - firstTotalDay) > selectMaxRange;
     }
 
 
@@ -507,26 +541,18 @@ public class MonthView extends View {
         }
 
         if (firstDay != -1) {
-            Calendar calendar = this.calendar;
-            calendar.set(Calendar.YEAR, firstYear);
-            calendar.set(Calendar.MONTH, firstMonth);
-            calendar.set(Calendar.DATE, firstDay);
-            firstDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+            Calendar firstCalendar = this.calendar;
+            firstCalendar.set(Calendar.YEAR, firstYear);
+            firstCalendar.set(Calendar.MONTH, firstMonth);
+            firstCalendar.set(Calendar.DATE, firstDay);
+            firstTotalDay = firstCalendar.getTime().getTime() / DAY_TIME;
 
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DATE, 1);
-            dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+            Calendar currentCalendar = this.calendar;
+            currentCalendar.set(Calendar.YEAR, year);
+            currentCalendar.set(Calendar.MONTH, month);
+            currentCalendar.set(Calendar.DATE, 1);
+            currentTotalDay = currentCalendar.getTime().getTime() / DAY_TIME;
         }
-
-        if (lastDay != -1) {
-            Calendar calendar = this.calendar;
-            calendar.set(Calendar.YEAR, lastYear);
-            calendar.set(Calendar.MONTH, lastMonth);
-            calendar.set(Calendar.DATE, lastDay);
-            lastDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        }
-
         rowNum = calculateNumRows();
         requestLayout();
     }
@@ -556,14 +582,13 @@ public class MonthView extends View {
         return year == firstYear && month == firstMonth && day == firstDay;
     }
 
-
     private boolean isLastDay(int day) {
         return year == lastYear && month == lastMonth && day == lastDay;
     }
 
     public int dayOfMonth(int year, int month) {
         Calendar calendar = this.calendar;
-        calendar.set(year, month + 1, 0);
+        this.calendar.set(year, month + 1, 0);
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
 

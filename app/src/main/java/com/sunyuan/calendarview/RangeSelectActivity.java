@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.sunyuan.calendarlibrary.CalendarView;
 import com.sunyuan.calendarlibrary.MonthTitleViewCallBack;
+import com.sunyuan.calendarlibrary.OnCalendarSelectDayListener;
 import com.sunyuan.calendarlibrary.model.CalendarDay;
 import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
 
@@ -39,6 +40,7 @@ public class RangeSelectActivity extends AppCompatActivity {
         String lastSelectDateStr = formatDate("yyyy-MM-dd", calendarSelectDay.getLastSelectDay().toDate());
         tvFirstSelectDate.setText(firstSelectDateStr);
         tvLastSelectDate.setText(lastSelectDateStr);
+
         calendarView.setCalendarSelectDay(calendarSelectDay);
         //绘制monthTitle
         calendarView.setMonthTitleViewCallBack(new MonthTitleViewCallBack() {
@@ -50,8 +52,9 @@ public class RangeSelectActivity extends AppCompatActivity {
                 return view;
             }
         });
+
         //设置选中事件
-        calendarView.setOnCalendarSelectDayListener(new CalendarView.OnCalendarSelectDayListener<CalendarDay>() {
+        calendarView.setOnCalendarSelectDayListener(new OnCalendarSelectDayListener<CalendarDay>() {
             @Override
             public void onCalendarSelectDay(CalendarSelectDay<CalendarDay> calendarSelectDay) {
                 CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
@@ -66,20 +69,36 @@ public class RangeSelectActivity extends AppCompatActivity {
                 }
             }
         });
+        calendarView.refresh();
+        //根据指定日期得到position位置
+        int position = calendarView.covertToPosition(calendarSelectDay.getFirstSelectDay());
+        //滚动到制定位置
+        calendarView.smoothScrollToPosition(position);
     }
 
     private void initSelectCalendar() {
         calendarSelectDay = new CalendarSelectDay<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        CalendarDay firstSelectDay = new CalendarDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        int year;
+        int month;
+        if (calendar.get(Calendar.MONTH) + 5 > 11) {
+            year = calendar.get(Calendar.YEAR) + 1;
+            month = 5;
+        } else {
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH) + 5;
+        }
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        CalendarDay firstSelectDay = new CalendarDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         int maxDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         if (dayOfMonth <= maxDayOfMonth - 3) {
             calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 3);
         } else {
             int maxMonth = calendar.getActualMaximum(Calendar.MONTH);
-            int month = calendar.get(Calendar.MONTH);
+            month = calendar.get(Calendar.MONTH);
             if (month + 1 > maxMonth) {
                 calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
             } else {
