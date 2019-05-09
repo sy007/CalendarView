@@ -33,7 +33,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
     private int currentYear;
     private CalendarSelectDay<CalendarDay> calendarSelectDay;
     private Map<Integer, Date> monthTitleMap;
-    private Map<CalendarDay, Integer> calendarDayToPositionMap = new HashMap<>();
     private boolean isShowMonthTitleView;
     private int marginLeft;
     private int marginTop;
@@ -147,7 +146,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         if (monthTitleMap != null) {
             monthTitleMap.put(position, getMonthDate(year, month));
         }
-        calendarDayToPositionMap.put(new CalendarDay(year, month, -1), position);
         Map<String, Integer> parmas = new HashMap<>();
         if (calendarSelectDay == null) {
             calendarSelectDay = new CalendarSelectDay<>();
