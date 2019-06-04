@@ -457,7 +457,7 @@ public class MonthView extends View {
                 calendar.set(Calendar.MONTH, month);
                 int monthMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                 for (int day = 1; day <= monthMaxDay; day++) {
-                    int dayOffset = findDayOffset(firstYear, firstMonth, day);
+                    int dayOffset = findDayOffset(year, month, day);
                     int offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, top, offset + dayWidth, top + rowHeight);
                     selectPaint.setColor(selectRangeBgColor);
@@ -469,7 +469,6 @@ public class MonthView extends View {
             }
         }
     }
-
 
 
     private void drawSelectRange(Canvas canvas, Rect dayRang, Paint selectPaint) {
