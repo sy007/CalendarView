@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -29,11 +30,11 @@ public class MonthLableView extends View {
     private Paint.FontMetrics fontMetrics;
     private Paint lablePaint;
     private int columnNum = 7;
-    private int lableWidht;
+    private float lableWidht;
     private static final String[] LABLE_ARR = new String[]{
             "周日", "周一", "周二", "周三", "周四", "周五", "周六"
     };
-    private Rect lableRect;
+    private RectF lableRectF;
     private CharSequence[] lableArr;
 
     public MonthLableView(Context context) {
@@ -60,7 +61,7 @@ public class MonthLableView extends View {
     }
 
     private void initPaint() {
-        lableRect = new Rect();
+        lableRectF = new RectF();
         lablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         lablePaint.setTextAlign(Paint.Align.CENTER);
         lablePaint.setTextSize(textSize);
@@ -76,7 +77,7 @@ public class MonthLableView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        lableWidht = (w - getPaddingLeft() - getPaddingRight()) / columnNum;
+        lableWidht = (w - getPaddingLeft() - getPaddingRight()) / (columnNum * 1.0f);
     }
 
     @Override
@@ -87,15 +88,15 @@ public class MonthLableView extends View {
         int top = getPaddingTop();
         int lableHeight = getHeight() - getPaddingTop() - getPaddingBottom();
         for (int i = 0; i < columnNum; i++) {
-            lableRect.set(left, top, left + lableWidht, top + lableHeight);
+            lableRectF.set(left, top, left + lableWidht, top + lableHeight);
             if (i == 0 || i == columnNum - 1) {
                 lablePaint.setColor(weekendTextColor);
             } else {
                 lablePaint.setColor(textColor);
             }
             float distance = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent;
-            float baseline = lableRect.centerY() + distance;
-            canvas.drawText(lableArr[i].toString(), lableRect.centerX(), baseline, lablePaint);
+            float baseline = lableRectF.centerY() + distance;
+            canvas.drawText(lableArr[i].toString(), lableRectF.centerX(), baseline, lablePaint);
             left += lableWidht;
         }
     }

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-
+    <!--星期-->
     <com.sunyuan.calendarlibrary.MonthLableView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         sy:lableTextColor="#333333"
         sy:lableTextSize="13sp"
         sy:lableWeekendTextColor="#333333" />
-
+    <!--日历-->
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
