@@ -16,41 +16,40 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
 ## 使用
 ### XML文件
 ````xml
-<!--星期-->
-<com.sunyuan.calendarlibrary.MonthLableView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FAFAFA"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    sy:lableArr="@array/month_view_lable_arr"
-    sy:lableTextColor="#333333"
-    sy:lableTextSize="13sp"
-    sy:lableWeekendTextColor="#333333" />
-<!--日历-->
-<com.sunyuan.calendarlibrary.CalendarView
-    android:id="@+id/calendar_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF"
-    sy:bottomTextSize="10sp"
-    sy:disTextColor="#999999"
-    sy:dividerColor="#E8E8E8"
-    sy:dividerHeight="1px"
-    sy:firstSelectDayText="出发"
-    sy:firstTopMargin="10dp"
-    sy:rowHeight="64dp"
-    sy:sameTextColor="#333333"
-    sy:secondTopMargin="5dp"
-    sy:selectBgColor="#2A86E8"
-    sy:selectStyle="rectangle"
-    sy:selectTextColor="#FFFFFF"
-    sy:textColor="#333333"
-    sy:textSize="16sp"
-    sy:thirdTopMargin="5dp"
-    sy:topTextColor="#333333"
-    sy:topTextSize="10sp"
-    sy:weekendTextColor="#FF6E00" />
+    <!--星期-->
+    <com.sunyuan.calendarlibrary.MonthLableView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FAFAFA"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        sy:lableArr="@array/month_view_lable_arr"
+        sy:lableTextColor="#333333"
+        sy:lableTextSize="13sp"
+        sy:lableWeekendTextColor="#333333" />
+    <!--日历-->
+    <com.sunyuan.calendarlibrary.CalendarView
+        android:id="@+id/calendar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        sy:bottomTextSize="10sp"
+        sy:disTextColor="#999999"
+        sy:dividerColor="#E8E8E8"
+        sy:dividerHeight="1px"
+        sy:firstSelectDayText="出发"
+        sy:firstTopMargin="10dp"
+        sy:rowHeight="64dp"
+        sy:sameTextColor="#333333"
+        sy:secondTopMargin="5dp"
+        sy:selectBgDrawable="@drawable/drawable_select_bg"
+        sy:selectTextColor="#FFFFFF"
+        sy:textColor="#333333"
+        sy:textSize="16sp"
+        sy:thirdTopMargin="5dp"
+        sy:topTextColor="#333333"
+        sy:topTextSize="10sp"
+        sy:weekendTextColor="#FF6E00" />
 ````
 
 ### XML 自定义属性
@@ -71,20 +70,14 @@ CalendarView(日历)
 | textColor | color | 日历天字体颜色 |
 | selectTextColor | color | 选中字体颜色 |
 | weekendTextColor | color | 周末字体颜色 |
-| selectBgColor | color | 选中背景颜色 |
 | disTextColor | color | 不可选字体颜色 |
 | sameTextColor | color | 今天字体颜色 |
 | topTextColor | color | 节日字体颜色 |
-| selectRangebgColor | color | 选中间隔背景颜色 |
 | selectMaxRange | integer | 限制最大可选多少天 |
 | monthPaddingLeft | dimension | 月份paddingLeft |
 | monthPaddingTop | dimension | 月份paddingTop |
 | monthPaddingRight | dimension | 月份paddingRight |
 | monthPaddingBottom | dimension | 月份paddingBottom |
-| monthMarginLeft | dimension | 月份MarginLeft |
-| monthMarginTop | dimension | 月份MarginTop |
-| monthMarginRight | dimension | 月份MarginRight |
-| monthMarginBottom | dimension | 月份MarginBottom |
 |textSize | dimension | 日历天字体大小 |
 | topTextSize | dimension | 节日字体大小 |
 | bottomTextSize | dimension | 选中底部文案字体大小 |
@@ -95,8 +88,9 @@ CalendarView(日历)
 | dividerColor | color | 日历每一行间距颜色 |
 | firstSelectDayText | string | 第一次选中底部文案 |
 | lastSelectDayText | string | 最后一次选中底部文案 |
-| selectStyle | enum | 选中样式(rectangle 矩形  roundRectangle 圆角矩形) |
-| cornerRadius | dimension | 当选中为圆角矩形时圆角半径 |
+| selectBgDrawable| reference | 选中样式 |
+| selectRangeBgDrawable | reference | 选中范围样式 |
+
 
 ### 代码
 ````java
