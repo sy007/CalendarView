@@ -8,6 +8,7 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
 - [x] 只展示设置的日期范围
 - [x] 月份布局是否悬停展示
 - [x] 单选和范围选择
+- [x] 单选和范围选择自定义样式
 ## Demo
 ### 单选
 ![image](https://ws1.sinaimg.cn/large/006xnoHVly1fzl6io7cnhg30b40m8qth.gif)
