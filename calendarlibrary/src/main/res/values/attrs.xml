@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--monthView-->
     <declare-styleable name="CalendarView">
-        <!--monthTitle 2019年1月-->
-        <attr name="isShowMonthTitleView" format="boolean" />
-        <!--monthView-->
         <attr name="textColor" format="color" />
         <attr name="monthPaddingLeft" format="dimension" />
         <attr name="monthPaddingTop" format="dimension" />
