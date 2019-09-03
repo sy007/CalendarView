@@ -18,12 +18,18 @@ import java.util.Map;
 public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
 
     private boolean isInitHeight;
+    private boolean isStick;
     private int monthTitleHeight;
     private Map<Integer, View> monthTitleViewMap = new HashMap<>();
     private MonthTitleViewCallBack monthTitleViewCallBack;
 
     public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
         this.monthTitleViewCallBack = monthTitleViewCallBack;
+    }
+
+
+    public void setStick(boolean isStick) {
+        this.isStick = isStick;
     }
 
     public interface MonthDateCallback {
@@ -40,7 +46,7 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.Adapter adapter = parent.getAdapter();
         if (adapter instanceof MonthDateCallback) {
             MonthDateCallback monthDateCallback = (MonthDateCallback) adapter;
-            if (!isInitHeight && monthTitleViewCallBack != null) {
+            if (!isInitHeight) {
                 Date monthDate = monthDateCallback.getMonthDate(0);
                 View monthTitleView = monthTitleViewCallBack.getMonthTitleView(0, monthDate);
                 monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -74,7 +80,7 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 View view = parent.getChildAt(i);
                 int index = parent.getChildAdapterPosition(view);
                 View monthTitleView;
-                if (monthTitleViewMap.get(index) == null && monthTitleViewCallBack != null) {
+                if (monthTitleViewMap.get(index) == null ) {
                     Date monthDate = monthDateCallback.getMonthDate(index);
                     monthTitleView = monthTitleViewCallBack.getMonthTitleView(index, monthDate);
                     monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -84,10 +90,14 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 } else {
                     monthTitleView = monthTitleViewMap.get(index);
                 }
-                if (i == 0) {
-                    int tempTop = view.getBottom() - monthTitleHeight;
-                    if (tempTop < top) {
-                        top = tempTop;
+                if (isStick) {
+                    if (i == 0) {
+                        int tempTop = view.getBottom() - monthTitleHeight;
+                        if (tempTop < top) {
+                            top = tempTop;
+                        }
+                    } else {
+                        top = view.getTop() - monthTitleHeight;
                     }
                 } else {
                     top = view.getTop() - monthTitleHeight;

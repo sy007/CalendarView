@@ -24,11 +24,15 @@ public class CalendarDay implements Serializable {
 
 
     public Date toDate() {
+        return toCalendar().getTime();
+    }
+
+    public Calendar toCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DATE, day);
-        return calendar.getTime();
+        return calendar;
     }
 
     public int getYear() {

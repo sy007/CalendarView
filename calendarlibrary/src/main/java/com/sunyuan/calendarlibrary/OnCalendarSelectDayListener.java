@@ -17,7 +17,8 @@ public interface OnCalendarSelectDayListener<K> {
      * {@link CalendarSelectDay#getFirstSelectDay()}为第一次选择的日期，
      * {@link CalendarSelectDay#getLastSelectDay()}为最后一次选择的日期。
      *
-     * @param calendarSelectDay 设置显示的日期
+     * @param calendarSelectDay 选中的日期
      */
     void onCalendarSelectDay(CalendarSelectDay<K> calendarSelectDay);
+
 }

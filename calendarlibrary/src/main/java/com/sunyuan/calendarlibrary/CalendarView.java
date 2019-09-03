@@ -3,14 +3,11 @@ package com.sunyuan.calendarlibrary;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.sunyuan.calendarlibrary.model.CalendarDay;
-import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
 
 
 /**
@@ -20,9 +17,9 @@ import com.sunyuan.calendarlibrary.model.CalendarSelectDay;
  */
 public class CalendarView extends RecyclerView {
 
-
-    public static final String TAG = CalendarView.class.getSimpleName();
     private CalendarAdapter calendarAdapter;
+    private MonthTitleDecoration monthTitleDecoration;
+
 
     public CalendarView(Context context) {
         this(context, null);
@@ -35,24 +32,8 @@ public class CalendarView extends RecyclerView {
     public CalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CalendarView);
-        setLayoutManager(new LinearLayoutManager(context));
-        calendarAdapter = new CalendarAdapter(context, typedArray);
-        setAdapter(calendarAdapter);
+        calendarAdapter = new CalendarAdapter(getContext(), typedArray);
         typedArray.recycle();
-    }
-
-    /**
-     * 设置RecycleView itemDecoration,设置数据时会回调MonthTitleViewCallBack中getMonthTitleView方法
-     *
-     * @param monthTitleViewCallBack
-     */
-    public void setMonthTitleViewCallBack(MonthTitleViewCallBack monthTitleViewCallBack) {
-        boolean isShowMonthTitleView = calendarAdapter.isShowMonthTitleView();
-        if (isShowMonthTitleView) {
-            MonthTitleDecoration monthTitleDecoration = new MonthTitleDecoration();
-            monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
-            addItemDecoration(monthTitleDecoration);
-        }
     }
 
     /**
@@ -61,35 +42,35 @@ public class CalendarView extends RecyclerView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        int itemDecorationCount = getItemDecorationCount();
-        for (int itemDecorationIndex = 0; itemDecorationIndex < itemDecorationCount; itemDecorationIndex++) {
-            ItemDecoration itemDecoration = getItemDecorationAt(itemDecorationIndex);
-            if (itemDecoration instanceof MonthTitleDecoration) {
-                ((MonthTitleDecoration) itemDecoration).destroy();
-                break;
-            }
+        if (monthTitleDecoration != null) {
+            monthTitleDecoration.destroy();
         }
     }
 
 
-    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
-        calendarAdapter.setOnCalendarSelectDayListener(onCalendarSelectDayListener);
-    }
-
-
-    public void setCalendarSelectDay(CalendarSelectDay calendarSelectDay) {
-        calendarAdapter.setCalendarSelectDay(calendarSelectDay);
-    }
-
-
+    /**
+     * 外部调用刷新
+     */
     public void refresh() {
         calendarAdapter.refresh();
     }
 
-
     public int covertToPosition(@NonNull CalendarDay calendarDay) {
-        int position = calendarAdapter.covertToPosition(calendarDay);
-        Log.d(TAG, "covertToPosition:" + position);
-        return position;
+        return calendarAdapter.covertToPosition(calendarDay);
+    }
+
+    public void display(CalendarViewWrapper.CalendarBuilder calendarBuilder) {
+        MonthTitleViewCallBack monthTitleViewCallBack = calendarBuilder.monthTitleViewCallBack;
+        boolean isStick = calendarBuilder.isStick;
+        boolean isShowMonthTitleView = calendarBuilder.isShowMonthTitleView;
+        if (isShowMonthTitleView && monthTitleViewCallBack != null) {
+            monthTitleDecoration = new MonthTitleDecoration();
+            monthTitleDecoration.setStick(isStick);
+            monthTitleDecoration.setMonthTitleViewCallBack(monthTitleViewCallBack);
+            addItemDecoration(monthTitleDecoration);
+        }
+        calendarAdapter.init(calendarBuilder);
+        setLayoutManager(new LinearLayoutManager(getContext()));
+        setAdapter(calendarAdapter);
     }
 }

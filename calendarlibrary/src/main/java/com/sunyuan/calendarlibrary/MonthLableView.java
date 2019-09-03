@@ -11,9 +11,6 @@ import android.view.View;
 
 import com.sunyuan.calendarlibrary.utils.Utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 /**
  * author：six
  * created by:2019-01-20
@@ -31,11 +28,13 @@ public class MonthLableView extends View {
     private float textSize;
     private Paint.FontMetrics fontMetrics;
     private Paint lablePaint;
-    private Calendar calendar;
     private int columnNum = 7;
     private int lableWidht;
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("EEEEE");
+    private static final String[] LABLE_ARR = new String[]{
+            "周日", "周一", "周二", "周三", "周四", "周五", "周六"
+    };
     private Rect lableRect;
+    private CharSequence[] lableArr;
 
     public MonthLableView(Context context) {
         this(context, null);
@@ -47,12 +46,15 @@ public class MonthLableView extends View {
 
     public MonthLableView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        calendar = Calendar.getInstance();
         defaultLableTextSize = Utils.sp2px(context, 13);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MonthLableView);
         weekendTextColor = typedArray.getColor(R.styleable.MonthLableView_lableWeekendTextColor, defaultLableWeekendTextColor);
         textColor = typedArray.getColor(R.styleable.MonthLableView_lableTextColor, defaultLableTextColor);
         textSize = typedArray.getDimension(R.styleable.MonthLableView_lableTextSize, defaultLableTextSize);
+        lableArr = typedArray.getTextArray(R.styleable.MonthLableView_lableArr);
+        if (lableArr == null) {
+            lableArr = LABLE_ARR;
+        }
         typedArray.recycle();
         initPaint();
     }
@@ -91,12 +93,9 @@ public class MonthLableView extends View {
             } else {
                 lablePaint.setColor(textColor);
             }
-            int calendarDay = (i + calendar.getFirstDayOfWeek()) % columnNum;
-            calendar.set(Calendar.DAY_OF_WEEK, calendarDay);
-            String dayLabelText = SIMPLE_DATE_FORMAT.format(calendar.getTime());
             float distance = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent;
             float baseline = lableRect.centerY() + distance;
-            canvas.drawText(dayLabelText, lableRect.centerX(), baseline, lablePaint);
+            canvas.drawText(lableArr[i].toString(), lableRect.centerX(), baseline, lablePaint);
             left += lableWidht;
         }
     }

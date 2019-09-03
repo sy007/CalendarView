@@ -23,7 +23,6 @@
         <attr name="selectBgColor" format="color" />
         <attr name="disTextColor" format="color" />
         <attr name="sameTextColor" format="color" />
-        <attr name="preTextColor" format="color" />
         <attr name="topTextColor" format="color" />
         <attr name="selectRangebgColor" format="color" />
         <attr name="selectMaxRange" format="integer" />
@@ -37,7 +36,7 @@
         <attr name="dividerColor" format="color" />
         <attr name="firstSelectDayText" format="string" />
         <attr name="lastSelectDayText" format="string" />
-        <attr name="isSingleSelect" format="boolean" />
+        <attr name="rowHeight" format="dimension" />
     </declare-styleable>
 
 
@@ -45,6 +44,7 @@
         <attr name="lableWeekendTextColor" format="color" />
         <attr name="lableTextColor" format="color" />
         <attr name="lableTextSize" format="dimension" />
+        <attr name="lableArr" format="reference" />
     </declare-styleable>
 
 </resources>

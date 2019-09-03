@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,46 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import static com.sunyuan.calendarlibrary.MonthView.*;
+import static com.sunyuan.calendarlibrary.MonthView.ATTRS;
+import static com.sunyuan.calendarlibrary.MonthView.BOTTOM_TEXT_SIZE;
+import static com.sunyuan.calendarlibrary.MonthView.CORNER_RADIUS;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_DIS_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SAME_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_BG_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_RANGE_BG_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_TOP_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_WEEKEND_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DIS_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DIVIDER_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.DIVIDER_HEIGHT;
+import static com.sunyuan.calendarlibrary.MonthView.FIRST_SELECT_DAY_TEXT;
+import static com.sunyuan.calendarlibrary.MonthView.FIRST_TOP_MARGIN;
+import static com.sunyuan.calendarlibrary.MonthView.LAST_SELECT_DAY_TEXT;
+import static com.sunyuan.calendarlibrary.MonthView.MAX_DATE;
+import static com.sunyuan.calendarlibrary.MonthView.MIN_DATE;
+import static com.sunyuan.calendarlibrary.MonthView.MONTH_PADDING_BOTTOM;
+import static com.sunyuan.calendarlibrary.MonthView.MONTH_PADDING_LEFT;
+import static com.sunyuan.calendarlibrary.MonthView.MONTH_PADDING_RIGHT;
+import static com.sunyuan.calendarlibrary.MonthView.MONTH_PADDING_TOP;
+import static com.sunyuan.calendarlibrary.MonthView.ROW_HEIGHT;
+import static com.sunyuan.calendarlibrary.MonthView.SAME_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.SECOND_TOP_MARGIN;
+import static com.sunyuan.calendarlibrary.MonthView.SELECTION_MODE;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_BG_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_MAX_RANGE;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_RANGE_BG_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_STYLE;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.TEXT_SIZE;
+import static com.sunyuan.calendarlibrary.MonthView.THIRD_TOP_MARGIN;
+import static com.sunyuan.calendarlibrary.MonthView.TOP_SIZE;
+import static com.sunyuan.calendarlibrary.MonthView.TOP_TEXT_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.WEEKEND_TEXT_COLOR;
 
 
 /**
@@ -32,33 +71,26 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
     private int currentMonth;
     private int currentYear;
     private CalendarSelectDay<CalendarDay> calendarSelectDay;
-    private Map<Integer, Date> monthTitleMap;
-    private boolean isShowMonthTitleView;
+    private OnCalendarSelectDayListener<CalendarDay> onCalendarSelectDayListener;
+    private SparseArray<Date> monthTitleMap;
     private int marginLeft;
     private int marginTop;
     private int marginRight;
     private int marginBottom;
-    private boolean isSingleSelect;
+    private int itemCount;
+    private SelectionMode selectionMode;
+    private Calendar minCalendar;
+    private Calendar maxCalendar;
+
 
     public CalendarAdapter(Context context, TypedArray typedArray) {
         calendar = Calendar.getInstance();
-        currentMonth = calendar.get(Calendar.MONTH);
-        currentYear = calendar.get(Calendar.YEAR);
         parseTypedArray(context, typedArray);
     }
 
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        if (isShowMonthTitleView) {
-            monthTitleMap = new HashMap<>();
-        }
-    }
-
     private void parseTypedArray(Context context, TypedArray typedArray) {
-        isShowMonthTitleView = typedArray.getBoolean(R.styleable.CalendarView_isShowMonthTitleView, true);
-        isSingleSelect = typedArray.getBoolean(R.styleable.CalendarView_isSingleSelect, false);
+        int rowHeight = (int) typedArray.getDimension(R.styleable.CalendarView_rowHeight, Utils.dip2px(context, 64));
         int textColor = typedArray.getColor(R.styleable.CalendarView_textColor, DEFAULT_TEXT_COLOR);
         int selectTextColor = typedArray.getColor(R.styleable.CalendarView_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
         int selectBgColor = typedArray.getColor(R.styleable.CalendarView_selectBgColor, DEFAULT_SELECT_BG_COLOR);
@@ -68,7 +100,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         int sameTextColor = typedArray.getColor(R.styleable.CalendarView_sameTextColor, DEFAULT_SAME_TEXT_COLOR);
         int selectRangeBgColor = typedArray.getColor(R.styleable.CalendarView_selectRangebgColor, DEFAULT_SELECT_RANGE_BG_COLOR);
 
-        int rowHeight = Utils.dip2px(context, 75);
         int defaultTopSize = Utils.sp2px(context, 10);
         int defaultTextSize = Utils.sp2px(context, 13);
         int defaultBottomTextSize = Utils.sp2px(context, 10);
@@ -125,7 +156,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         ATTRS.put(ROW_HEIGHT, rowHeight);
         ATTRS.put(FIRST_SELECT_DAY_TEXT, firstSelectDayText);
         ATTRS.put(LAST_SELECT_DAY_TEXT, lastSelectDayText);
-        ATTRS.put(IS_SINGLE_SELECT, isSingleSelect);
     }
 
     @NonNull
@@ -189,64 +219,36 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
     }
 
 
-    @Override
-    public void onDayClick(CalendarDay calendarDay) {
-        CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
-        if (isSingleSelect) {
-            calendarSelectDay.setFirstSelectDay(calendarDay);
-        } else {
-            if (firstSelectDay != null) {
-                CalendarDay lastSelectDay = calendarSelectDay.getLastSelectDay();
-                if (lastSelectDay != null) {
-                    calendarSelectDay.setFirstSelectDay(calendarDay);
-                    calendarSelectDay.setLastSelectDay(null);
-                } else {
-                    if (calendarDay.toDate().before(firstSelectDay.toDate())) {
-                        calendarSelectDay.setFirstSelectDay(calendarDay);
-                    } else {
-                        calendarSelectDay.setLastSelectDay(calendarDay);
-                    }
-                }
-            } else {
-                calendarSelectDay.setFirstSelectDay(calendarDay);
-            }
-        }
-        if (calendarSelectDayListener != null) {
-            calendarSelectDayListener.onCalendarSelectDay(calendarSelectDay);
-        }
-        notifyDataSetChanged();
-    }
-
-
-    private OnCalendarSelectDayListener calendarSelectDayListener;
-
-
-    public void setOnCalendarSelectDayListener(OnCalendarSelectDayListener onCalendarSelectDayListener) {
-        this.calendarSelectDayListener = onCalendarSelectDayListener;
-    }
-
-
-    public void setCalendarSelectDay(CalendarSelectDay calendarSelectDay) {
-        this.calendarSelectDay = calendarSelectDay;
-    }
-
-
     public void refresh() {
         notifyDataSetChanged();
     }
 
 
     public int covertToPosition(CalendarDay calendarDay) {
-        int year = calendarDay.getYear();
-        int month = calendarDay.getMonth();
-        int position = (year * MONTH_IN_YEAR + month) - (currentYear * MONTH_IN_YEAR + currentMonth);
-        return position > MONTH_IN_YEAR ? 0 : position;
+        int itemCount = getItemCount();
+        if (itemCount == 0) {
+            return -1;
+        }
+        int calYear = calendarDay.toCalendar().get(Calendar.YEAR);
+        int calMonth = calendarDay.toCalendar().get(Calendar.MONTH);
+        int minYear = minCalendar.get(Calendar.YEAR);
+        int minMonth = minCalendar.get(Calendar.MONTH);
+        int maxYear = maxCalendar.get(Calendar.YEAR);
+        int maxMonth = maxCalendar.get(Calendar.MONTH);
+        int calToMaxCalDiffMonth = (maxYear * MONTH_IN_YEAR + maxMonth) - (calYear * MONTH_IN_YEAR + calMonth);
+        int calToMinCalDiffMonth = (calYear * MONTH_IN_YEAR + calMonth) - (minYear * MONTH_IN_YEAR + minMonth);
+        if (calToMaxCalDiffMonth < 0 || calToMinCalDiffMonth < 0) {
+            return -1;
+        }
+        int position = (calToMinCalDiffMonth % MONTH_IN_YEAR) + ((calToMaxCalDiffMonth / MONTH_IN_YEAR) * MONTH_IN_YEAR);
+        CalendarLog.d("position:" + position);
+        return position;
     }
 
 
     @Override
     public int getItemCount() {
-        return MONTH_IN_YEAR;
+        return itemCount;
     }
 
     @Override
@@ -254,8 +256,63 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         return monthTitleMap.get(position);
     }
 
-    public boolean isShowMonthTitleView() {
-        return isShowMonthTitleView;
+
+    @Override
+    public void onDayClick(CalendarDay calendarDay) {
+        if (onCalendarSelectDayListener != null) {
+            if (SelectionMode.SINGLE == selectionMode) {
+                calendarSelectDay.setFirstSelectDay(calendarDay);
+            } else {
+                CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
+                if (firstSelectDay != null) {
+                    CalendarDay lastSelectDay = calendarSelectDay.getLastSelectDay();
+                    if (lastSelectDay != null) {
+                        calendarSelectDay.setFirstSelectDay(calendarDay);
+                        calendarSelectDay.setLastSelectDay(null);
+                    } else {
+                        int i = calendarDay.toDate().compareTo(firstSelectDay.toDate());
+                        switch (i) {
+                            case 0:
+                                calendarSelectDay.setFirstSelectDay(calendarDay);
+                                break;
+                            case 1:
+                                calendarSelectDay.setLastSelectDay(calendarDay);
+                                break;
+                            case -1:
+                                calendarSelectDay.setFirstSelectDay(calendarDay);
+                                break;
+                        }
+                    }
+                } else {
+                    calendarSelectDay.setFirstSelectDay(calendarDay);
+                }
+            }
+            onCalendarSelectDayListener.onCalendarSelectDay(calendarSelectDay);
+        }
+        notifyDataSetChanged();
+    }
+
+
+    void init(CalendarViewWrapper.CalendarBuilder calendarBuilder) {
+        if (calendarBuilder.isShowMonthTitleView) {
+            monthTitleMap = new SparseArray<>();
+        }
+        Date minDate = Objects.requireNonNull(calendarBuilder.minDate);
+        Date maxDate = Objects.requireNonNull(calendarBuilder.maxDate);
+        minCalendar = Calendar.getInstance();
+        minCalendar.setTime(minDate);
+        maxCalendar = Calendar.getInstance();
+        maxCalendar.setTime(maxDate);
+        itemCount = Utils.getMonthDiff(minCalendar, maxCalendar) + 1;
+        calendar.setTime(minDate);
+        currentMonth = calendar.get(Calendar.MONTH);
+        currentYear = calendar.get(Calendar.YEAR);
+        selectionMode = calendarBuilder.selectionMode;
+        onCalendarSelectDayListener = calendarBuilder.onCalendarSelectDayListener;
+        calendarSelectDay = calendarBuilder.calendarSelectDay;
+        ATTRS.put(SELECTION_MODE, selectionMode);
+        ATTRS.put(MIN_DATE, minCalendar);
+        ATTRS.put(MAX_DATE, maxCalendar);
     }
 
     public static class CalendarHolder extends RecyclerView.ViewHolder {

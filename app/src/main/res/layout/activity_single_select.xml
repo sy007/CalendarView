@@ -27,13 +27,35 @@
     <com.sunyuan.calendarlibrary.MonthLableView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp" />
+        android:background="#FAFAFA"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        sy:lableArr="@array/month_view_lable_arr"
+        sy:lableTextColor="#333333"
+        sy:lableTextSize="13sp"
+        sy:lableWeekendTextColor="#333333" />
 
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
-        sy:dividerHeight="5dp"
-        sy:isSingleSelect="true" />
+        sy:bottomTextSize="10sp"
+        sy:disTextColor="#999999"
+        sy:dividerColor="#E8E8E8"
+        sy:dividerHeight="1px"
+        sy:firstSelectDayText="出发"
+        sy:firstTopMargin="10dp"
+        sy:rowHeight="64dp"
+        sy:sameTextColor="#333333"
+        sy:secondTopMargin="5dp"
+        sy:selectBgColor="#2A86E8"
+        sy:selectStyle="rectangle"
+        sy:selectTextColor="#FFFFFF"
+        sy:textColor="#333333"
+        sy:textSize="16sp"
+        sy:thirdTopMargin="5dp"
+        sy:topTextColor="#333333"
+        sy:topTextSize="10sp"
+        sy:weekendTextColor="#FF6E00" />
 </LinearLayout>

@@ -1,13 +1,10 @@
 package com.sunyuan.calendarlibrary;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -17,10 +14,11 @@ import com.sunyuan.calendarlibrary.model.CalendarDay;
 import com.sunyuan.calendarlibrary.utils.Lunar;
 import com.sunyuan.calendarlibrary.utils.LunarSolarConverter;
 import com.sunyuan.calendarlibrary.utils.Solar;
+import com.sunyuan.calendarlibrary.utils.Utils;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -37,15 +35,15 @@ public class MonthView extends View {
 
     private int year;
     private int month;
-    private int dayWidth;
+    private float dayWidth;
     private Paint dayPaint;
     private Paint thirdPaint;
     private int toYear;
     private int toMonth;
     private int toDay;
-    private Rect dayRang;
+    private RectF dayRang;
+    private static final int MONTH_IN_YEAR = 12;
 
-    private static final long DAY_TIME = 1000 * 60 * 60 * 24L;
 
     /**
      * 日历参数
@@ -89,7 +87,9 @@ public class MonthView extends View {
     public static final String CORNER_RADIUS = "CORNER_RADIUS";
     public static final String FIRST_SELECT_DAY_TEXT = "FIRST_SELECT_DAY_TEXT";
     public static final String LAST_SELECT_DAY_TEXT = "LAST_SELECT_DAY_TEXT";
-    public static final String IS_SINGLE_SELECT = "IS_SINGLE_SELECT";
+    public static final String SELECTION_MODE = "SELECTION_MODE";
+    public static final String MIN_DATE = "MIN_DATE";
+    public static final String MAX_DATE = "MAX_DATE";
 
     public static final int DEFAULT_TOP_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_TEXT_COLOR = Color.parseColor("#000000");
@@ -99,7 +99,7 @@ public class MonthView extends View {
     public static final int DEFAULT_WEEKEND_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_DIS_TEXT_COLOR = Color.parseColor("#BBBBBB");
     public static final int DEFAULT_SAME_TEXT_COLOR = Color.parseColor("#FF6E00");
-    public static final int DEFAULT_SELECT_MAX_RANGE = -1;
+    public static final int DEFAULT_SELECT_MAX_RANGE = 0;
     public static final int DEFAULT_DIVIDER_HEIGHT = 0;
     public static final int DEFAULT_DIVIDER_COLOR = 0;
     public static final String TODAY_TEXT = "今天";
@@ -121,11 +121,11 @@ public class MonthView extends View {
     private int firstTopMargin;
     private int secondTopMargin;
     private int sameTextColor;
-    private int selectMaxRange;
-    private Paint.FontMetrics fm;
 
+
+    private Paint.FontMetrics fm;
     private Paint selectPaint;
-    private Rect selectRangeRect;
+    private RectF selectRangeRect;
     private int selectRangeBgColor;
     private Map<Integer, String> festivalMap = new HashMap<>();
     private Solar solar;
@@ -139,10 +139,18 @@ public class MonthView extends View {
     private int cornerRadius;
     private String firstSelectDayText;
     private String lastSelectDayText;
-    private boolean isSingleSelect;
-    private long firstTotalDay;
-    private long currentTotalDay;
+    private SelectionMode selectionMode;
 
+
+    private Calendar minCalendar;
+    private Calendar maxCalendar;
+
+    /**
+     * 可选择的最大范围天数，只有选择模式为范围选择时生效。
+     * 比如当选择模式为范围选择时，selectMaxRange =10 当选中第一个日期后 2019-9-3，那么第二个日期可以选择范围为2019-9-4到2019-9-13。
+     */
+    private int selectMaxRange;
+    private int curToFirstDayDiff;
 
     public MonthView(Context context) {
         this(context, null);
@@ -176,12 +184,15 @@ public class MonthView extends View {
         cornerRadius = (int) ATTRS.get(CORNER_RADIUS);
         firstSelectDayText = (String) ATTRS.get(FIRST_SELECT_DAY_TEXT);
         lastSelectDayText = (String) ATTRS.get(LAST_SELECT_DAY_TEXT);
-        isSingleSelect = (boolean) ATTRS.get(IS_SINGLE_SELECT);
+        selectionMode = (SelectionMode) ATTRS.get(SELECTION_MODE);
         int paddingLeft = (int) ATTRS.get(MONTH_PADDING_LEFT);
         int paddingTop = (int) ATTRS.get(MONTH_PADDING_TOP);
         int paddingRight = (int) ATTRS.get(MONTH_PADDING_RIGHT);
         int paddingBottom = (int) ATTRS.get(MONTH_PADDING_BOTTOM);
         setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        //获取最小日期和最大日期
+        minCalendar = (Calendar) ATTRS.get(MIN_DATE);
+        maxCalendar = (Calendar) ATTRS.get(MAX_DATE);
         calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -191,8 +202,8 @@ public class MonthView extends View {
         toMonth = calendar.get(Calendar.MONTH);
         toDay = calendar.get(Calendar.DATE);
         solar = new Solar();
-        dayRang = new Rect();
-        selectRangeRect = new Rect();
+        dayRang = new RectF();
+        selectRangeRect = new RectF();
         fm = new Paint.FontMetrics();
         initPaint();
     }
@@ -230,14 +241,14 @@ public class MonthView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        dayWidth = (w - (getPaddingLeft() + getPaddingRight())) / columnNum;
+        dayWidth = ((w - (getPaddingLeft() + getPaddingRight())) / (columnNum * 1.0f));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawDays(canvas);
-        if (!isSingleSelect && lastDay != -1 && selectStyle >= 0) {
+        if (SelectionMode.RANGE == selectionMode && lastDay != -1 && selectStyle >= 0) {
             drawRange(canvas);
         }
     }
@@ -255,6 +266,7 @@ public class MonthView extends View {
         }
         return true;
     }
+
 
     private OnDayClickListener onDayClickListener;
 
@@ -281,7 +293,8 @@ public class MonthView extends View {
         int day = 1 + ((int) ((x - getPaddingLeft()) * columnNum / (getWidth() - getPaddingLeft() - getPaddingRight())) - findDayOffset(year, month, 1)) +
                 yDay * columnNum;
 
-        if (dayOfMonth(year, month) < day || day < 1 || isPreDay(day) || isMaxRange(day)) {
+        if (dayOfMonth(year, month) < day || day < 1 || isPreDay(day) || isMaxSelectDay(day) ||
+                (SelectionMode.RANGE == selectionMode && isMaxRange(day))) {
             return null;
         }
 
@@ -289,17 +302,15 @@ public class MonthView extends View {
     }
 
 
-    @SuppressLint("DefaultLocale")
     private void drawDays(Canvas canvas) {
         String dayText;
         int dayOfMonth = dayOfMonth(year, month);
         int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int top = paddingTop;
+        int top = getPaddingTop();
         for (int day = 1; day <= dayOfMonth; day++) {
             String festival = festivalMap.get(day);
             int dayOffset = findDayOffset(year, month, day);
-            int offset = dayOffset * dayWidth + paddingLeft;
+            float offset = dayOffset * dayWidth + paddingLeft;
             dayRang.set(offset, top, offset + dayWidth, top + rowHeight);
             if (isFirstDay(day) || isLastDay(day)) {
                 if (selectStyle >= 0) {
@@ -307,7 +318,7 @@ public class MonthView extends View {
                     drawSelectRange(canvas, dayRang, selectPaint);
                 }
             }
-            dayText = String.format("%d", day);
+            dayText = String.format(Locale.CANADA, "%d", day);
             if (isSameDay(day)) {
                 dayText = TODAY_TEXT;
             }
@@ -321,7 +332,7 @@ public class MonthView extends View {
                     drawSelectDayText(canvas, lastSelectDayText);
                 }
             } else {
-                if (isPreDay(day)) {
+                if (isPreDay(day) || isMaxSelectDay(day) || (SelectionMode.RANGE == selectionMode && isMaxRange(day))) {
                     firstSelectPaint.setColor(disTextColor);
                     dayPaint.setColor(disTextColor);
                 } else {
@@ -337,24 +348,16 @@ public class MonthView extends View {
                     }
                 }
             }
-            if (!isSingleSelect && isMaxRange(day)) {
-                firstSelectPaint.setColor(disTextColor);
-                dayPaint.setColor(disTextColor);
-            }
             firstSelectPaint.getFontMetrics(fm);
-            float dayFirstAscent = fm.ascent;
-            float dayFirstDescent = fm.descent;
-            float dayFirstHeight = dayFirstDescent - dayFirstAscent;
+            float dayFirstHeight = fm.descent - fm.ascent;
             if (!TextUtils.isEmpty(festival)) {
                 canvas.drawText(festival, dayRang.centerX(),
-                        dayRang.top +
-                                firstTopMargin + Math.abs(dayFirstAscent), firstSelectPaint);
+                        dayRang.top + firstTopMargin + Math.abs(fm.ascent), firstSelectPaint);
             }
             dayPaint.getFontMetrics(fm);
-            canvas.drawText(dayText, dayRang.centerX(),
-                    dayRang.top +
-                            firstTopMargin + dayFirstHeight + secondTopMargin +
-                            Math.abs(fm.ascent), dayPaint);
+            canvas.drawText(dayText, dayRang.centerX(), dayRang.top +
+                    firstTopMargin + dayFirstHeight + secondTopMargin +
+                    Math.abs(fm.ascent), dayPaint);
             if (columnNum - dayOffset == 1) {
                 top += (rowHeight + dividerHeight);
                 if (0 != dividerHeight) {
@@ -362,6 +365,42 @@ public class MonthView extends View {
                 }
             }
         }
+    }
+
+
+    private boolean isMaxSelectDay(int day) {
+        //如果最小限制的日期和最大限制的日期在同一月，可选择范围在最小限制日期到最大限制日期
+        if (isMinMonth() && isMaxMonth()) {
+            int minDay = minCalendar.get(Calendar.DATE);
+            int maxDay = maxCalendar.get(Calendar.DATE);
+            return !(day >= minDay && day <= maxDay);
+        }
+        //如果当前显示在最小限制日期，可选择范围在最小限制日期到该时间月底
+        if (isMinMonth()) {
+            int minDay = minCalendar.get(Calendar.DATE);
+            int monthOfDay = minCalendar.getActualMaximum(Calendar.DATE);
+            return !(day >= minDay && day <= monthOfDay);
+        }
+        //如果当前显示在最大限制日期，可选择范围在月初到最大限制日期
+        if (isMaxMonth()) {
+            int maxDay = maxCalendar.get(Calendar.DATE);
+            return !(day <= maxDay);
+        }
+        return false;
+    }
+
+
+    private boolean isMinMonth() {
+        int minYear = minCalendar.get(Calendar.YEAR);
+        int minMonth = minCalendar.get(Calendar.MONTH);
+        return (minYear == year && minMonth == month);
+    }
+
+
+    private boolean isMaxMonth() {
+        int maxYear = maxCalendar.get(Calendar.YEAR);
+        int maxMonth = maxCalendar.get(Calendar.MONTH);
+        return (maxYear == year && maxMonth == month);
     }
 
     /**
@@ -372,8 +411,6 @@ public class MonthView extends View {
      */
     private void drawSelectDayText(Canvas canvas, String selectDayText) {
         firstSelectPaint.getFontMetrics(fm);
-        thirdPaint.getFontMetrics(fm);
-        thirdPaint.setColor(selectTextColor);
         float firstAscent = fm.ascent;
         float firstDescent = fm.descent;
         float firstHeight = firstDescent - firstAscent;
@@ -382,6 +419,7 @@ public class MonthView extends View {
         float daySecondDescent = fm.descent;
         float daySecondHeight = daySecondDescent - daySecondAscent;
         thirdPaint.getFontMetrics(fm);
+        thirdPaint.setColor(selectTextColor);
         canvas.drawText(selectDayText, dayRang.centerX(), dayRang.top + firstTopMargin + firstHeight +
                         secondTopMargin + daySecondHeight + thirdTopMargin + Math.abs(fm.ascent),
                 thirdPaint);
@@ -407,7 +445,7 @@ public class MonthView extends View {
             int firstRangeTop = getFirstRangeTop() + getPaddingTop();
             for (int day = firstDay + 1; day < lastDay; day++) {
                 int dayOffset = findDayOffset(firstYear, firstMonth, day);
-                int offset = dayOffset * dayWidth + getPaddingLeft();
+                float offset = dayOffset * dayWidth + getPaddingLeft();
                 selectRangeRect.set(offset, firstRangeTop, offset + dayWidth, firstRangeTop + rowHeight);
                 selectPaint.setColor(selectRangeBgColor);
                 drawSelectRange(canvas, selectRangeRect, selectPaint);
@@ -426,7 +464,7 @@ public class MonthView extends View {
                 int firstRangeTop = getFirstRangeTop() + getPaddingTop();
                 for (int day = firstDay + 1; day <= firstMonthMaxDay; day++) {
                     int dayOffset = findDayOffset(firstYear, firstMonth, day);
-                    int offset = dayOffset * dayWidth + getPaddingLeft();
+                    float offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, firstRangeTop, offset + dayWidth, firstRangeTop + rowHeight);
                     selectPaint.setColor(selectRangeBgColor);
                     drawSelectRange(canvas, selectRangeRect, selectPaint);
@@ -440,7 +478,7 @@ public class MonthView extends View {
                 int lastRangeTop = getPaddingTop();
                 for (int day = 1; day < lastDay; day++) {
                     int dayOffset = findDayOffset(lastYear, lastMonth, day);
-                    int offset = dayOffset * dayWidth + getPaddingLeft();
+                    float offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, lastRangeTop, offset + dayWidth, lastRangeTop + rowHeight);
                     selectPaint.setColor(selectRangeBgColor);
                     drawSelectRange(canvas, selectRangeRect, selectPaint);
@@ -458,7 +496,7 @@ public class MonthView extends View {
                 int monthMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                 for (int day = 1; day <= monthMaxDay; day++) {
                     int dayOffset = findDayOffset(year, month, day);
-                    int offset = dayOffset * dayWidth + getPaddingLeft();
+                    float offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, top, offset + dayWidth, top + rowHeight);
                     selectPaint.setColor(selectRangeBgColor);
                     drawSelectRange(canvas, selectRangeRect, selectPaint);
@@ -471,7 +509,7 @@ public class MonthView extends View {
     }
 
 
-    private void drawSelectRange(Canvas canvas, Rect dayRang, Paint selectPaint) {
+    private void drawSelectRange(Canvas canvas, RectF dayRang, Paint selectPaint) {
         switch (selectStyle) {
             case 0:
                 canvas.drawRect(dayRang, selectPaint);
@@ -502,17 +540,17 @@ public class MonthView extends View {
 
 
     private boolean isDrawSelectRangeOfMiddleStatus() {
-        int totalMonth = year * 12 + month;
-        int firstTotalMonth = firstYear * 12 + firstMonth;
-        int lastTotalMonth = lastYear * 12 + lastMonth;
+        int totalMonth = year * MONTH_IN_YEAR + month;
+        int firstTotalMonth = firstYear * MONTH_IN_YEAR + firstMonth;
+        int lastTotalMonth = lastYear * MONTH_IN_YEAR + lastMonth;
         return totalMonth > firstTotalMonth && totalMonth < lastTotalMonth;
     }
 
     private boolean isMaxRange(int day) {
-        if (firstDay == -1 || selectMaxRange == -1) {
+        if (firstDay == -1 || selectMaxRange == DEFAULT_SELECT_MAX_RANGE) {
             return false;
         }
-        return (currentTotalDay + day - 1 - firstTotalDay) > selectMaxRange;
+        return (curToFirstDayDiff + day - 1) > selectMaxRange;
     }
 
 
@@ -539,18 +577,18 @@ public class MonthView extends View {
             lastDay = params.get(VIEW_LAST_SELECT_DAY);
         }
 
+
         if (firstDay != -1) {
-            Calendar firstCalendar = this.calendar;
+            Calendar firstCalendar = Calendar.getInstance();
             firstCalendar.set(Calendar.YEAR, firstYear);
             firstCalendar.set(Calendar.MONTH, firstMonth);
             firstCalendar.set(Calendar.DATE, firstDay);
-            firstTotalDay = firstCalendar.getTime().getTime() / DAY_TIME;
-
-            Calendar currentCalendar = this.calendar;
+            Calendar currentCalendar = Calendar.getInstance();
             currentCalendar.set(Calendar.YEAR, year);
             currentCalendar.set(Calendar.MONTH, month);
             currentCalendar.set(Calendar.DATE, 1);
-            currentTotalDay = currentCalendar.getTime().getTime() / DAY_TIME;
+            //第一次选中日期到当前展示月份的差
+            curToFirstDayDiff = Utils.getDayDiff(firstCalendar, currentCalendar);
         }
         rowNum = calculateNumRows();
         requestLayout();
@@ -611,4 +649,6 @@ public class MonthView extends View {
     public interface OnDayClickListener {
         void onDayClick(CalendarDay calendarDay);
     }
+
+
 }

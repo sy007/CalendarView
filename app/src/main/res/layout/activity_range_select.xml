@@ -56,5 +56,5 @@
         sy:dividerHeight="5dp"
         sy:firstSelectDayText="入住"
         sy:lastSelectDayText="离店"
-        sy:selectMaxRange="-1" />
+        sy:selectMaxRange="120" />
 </LinearLayout>
