@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -35,13 +37,13 @@ public class MonthView extends View {
 
     private int year;
     private int month;
-    private float dayWidth;
+    private int dayWidth;
     private Paint dayPaint;
     private Paint thirdPaint;
     private int toYear;
     private int toMonth;
     private int toDay;
-    private RectF dayRang;
+    private Rect dayRang;
     private static final int MONTH_IN_YEAR = 12;
 
 
@@ -64,8 +66,8 @@ public class MonthView extends View {
     public static final String TOP_TEXT_COLOR = "TOP_TEXT_COLOR";
     public static final String TEXT_COLOR = "TEXT_COLOR";
     public static final String SELECT_TEXT_COLOR = "SELECT_TEXT_COLOR";
-    public static final String SELECT_BG_COLOR = "SELECT_BG_COLOR";
-    public static final String SELECT_RANGE_BG_COLOR = "SELECT_RANGE_BG_COLOR";
+    public static final String SELECT_BG_DRAWABLE = "SELECT_BG_DRAWABLE";
+    public static final String SELECT_RANGE_BG_DRAWABLE = "SELECT_RANGE_BG_DRAWABLE";
     public static final String WEEKEND_TEXT_COLOR = "WEEKEND_TEXT_COLOR";
     public static final String DIS_TEXT_COLOR = "DIS_TEXT_COLOR";
     public static final String SAME_TEXT_COLOR = "SAME_TEXT_COLOR";
@@ -83,8 +85,6 @@ public class MonthView extends View {
     public static final String MONTH_PADDING_TOP = "MONTH_PADDING_TOP";
     public static final String MONTH_PADDING_RIGHT = "MONTH_PADDING_RIGHT";
     public static final String MONTH_PADDING_BOTTOM = "MONTH_PADDING_BOTTOM";
-    public static final String SELECT_STYLE = "SELECT_STYLE";
-    public static final String CORNER_RADIUS = "CORNER_RADIUS";
     public static final String FIRST_SELECT_DAY_TEXT = "FIRST_SELECT_DAY_TEXT";
     public static final String LAST_SELECT_DAY_TEXT = "LAST_SELECT_DAY_TEXT";
     public static final String SELECTION_MODE = "SELECTION_MODE";
@@ -94,8 +94,6 @@ public class MonthView extends View {
     public static final int DEFAULT_TOP_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_TEXT_COLOR = Color.parseColor("#000000");
     public static final int DEFAULT_SELECT_TEXT_COLOR = Color.parseColor("#FFFFFF");
-    public static final int DEFAULT_SELECT_BG_COLOR = Color.parseColor("#3A5FCD");
-    public static final int DEFAULT_SELECT_RANGE_BG_COLOR = Color.parseColor("#4C3A5FCD");
     public static final int DEFAULT_WEEKEND_TEXT_COLOR = Color.parseColor("#FF6E00");
     public static final int DEFAULT_DIS_TEXT_COLOR = Color.parseColor("#BBBBBB");
     public static final int DEFAULT_SAME_TEXT_COLOR = Color.parseColor("#FF6E00");
@@ -112,7 +110,7 @@ public class MonthView extends View {
     private int lastDay;
     private int textColor;
     private int selectTextColor;
-    private int selectBgColor;
+
     private int weekendTextColor;
     private int disTextColor;
     private int bottomTextSize;
@@ -121,12 +119,8 @@ public class MonthView extends View {
     private int firstTopMargin;
     private int secondTopMargin;
     private int sameTextColor;
-
-
     private Paint.FontMetrics fm;
-    private Paint selectPaint;
-    private RectF selectRangeRect;
-    private int selectRangeBgColor;
+    private Rect selectRangeRect;
     private Map<Integer, String> festivalMap = new HashMap<>();
     private Solar solar;
     private Paint firstSelectPaint;
@@ -135,8 +129,6 @@ public class MonthView extends View {
     private int dividerHeight;
     private int dividerColor;
     private Paint dividerPaint;
-    private int selectStyle;
-    private int cornerRadius;
     private String firstSelectDayText;
     private String lastSelectDayText;
     private SelectionMode selectionMode;
@@ -151,6 +143,8 @@ public class MonthView extends View {
      */
     private int selectMaxRange;
     private int curToFirstDayDiff;
+    private Drawable selectBgDrawable;
+    private Drawable selectRangeDrawable;
 
     public MonthView(Context context) {
         this(context, null);
@@ -164,12 +158,16 @@ public class MonthView extends View {
         super(context, attrs, defStyleAttr);
         textColor = (int) ATTRS.get(TEXT_COLOR);
         selectTextColor = (int) ATTRS.get(SELECT_TEXT_COLOR);
-        selectBgColor = (int) ATTRS.get(SELECT_BG_COLOR);
+        if (ATTRS.get(SELECT_BG_DRAWABLE) != null) {
+            selectBgDrawable = (Drawable) ATTRS.get(SELECT_BG_DRAWABLE);
+        }
+        if (ATTRS.get(SELECT_RANGE_BG_DRAWABLE) != null) {
+            selectRangeDrawable = (Drawable) ATTRS.get(SELECT_RANGE_BG_DRAWABLE);
+        }
         weekendTextColor = (int) ATTRS.get(WEEKEND_TEXT_COLOR);
         disTextColor = (int) ATTRS.get(DIS_TEXT_COLOR);
         topTextColor = (int) ATTRS.get(TOP_TEXT_COLOR);
         sameTextColor = (int) ATTRS.get(SAME_TEXT_COLOR);
-        selectRangeBgColor = (int) ATTRS.get(SELECT_RANGE_BG_COLOR);
         topTextSize = (int) ATTRS.get(TOP_SIZE);
         textSize = (int) ATTRS.get(TEXT_SIZE);
         bottomTextSize = (int) ATTRS.get(BOTTOM_TEXT_SIZE);
@@ -180,8 +178,6 @@ public class MonthView extends View {
         dividerHeight = (int) ATTRS.get(DIVIDER_HEIGHT);
         dividerColor = (int) ATTRS.get(DIVIDER_COLOR);
         rowHeight = (int) ATTRS.get(ROW_HEIGHT);
-        selectStyle = (int) ATTRS.get(SELECT_STYLE);
-        cornerRadius = (int) ATTRS.get(CORNER_RADIUS);
         firstSelectDayText = (String) ATTRS.get(FIRST_SELECT_DAY_TEXT);
         lastSelectDayText = (String) ATTRS.get(LAST_SELECT_DAY_TEXT);
         selectionMode = (SelectionMode) ATTRS.get(SELECTION_MODE);
@@ -202,8 +198,8 @@ public class MonthView extends View {
         toMonth = calendar.get(Calendar.MONTH);
         toDay = calendar.get(Calendar.DATE);
         solar = new Solar();
-        dayRang = new RectF();
-        selectRangeRect = new RectF();
+        dayRang = new Rect();
+        selectRangeRect = new Rect();
         fm = new Paint.FontMetrics();
         initPaint();
     }
@@ -218,7 +214,6 @@ public class MonthView extends View {
         dividerPaint = new Paint();
         dividerPaint.setColor(dividerColor);
 
-        selectPaint = new Paint();
 
         firstSelectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         firstSelectPaint.setTextSize(topTextSize);
@@ -241,14 +236,14 @@ public class MonthView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        dayWidth = ((w - (getPaddingLeft() + getPaddingRight())) / (columnNum * 1.0f));
+        dayWidth = ((w - (getPaddingLeft() + getPaddingRight())) / columnNum);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawDays(canvas);
-        if (SelectionMode.RANGE == selectionMode && lastDay != -1 && selectStyle >= 0) {
+        if (SelectionMode.RANGE == selectionMode && lastDay != -1) {
             drawRange(canvas);
         }
     }
@@ -310,12 +305,12 @@ public class MonthView extends View {
         for (int day = 1; day <= dayOfMonth; day++) {
             String festival = festivalMap.get(day);
             int dayOffset = findDayOffset(year, month, day);
-            float offset = dayOffset * dayWidth + paddingLeft;
+            int offset = dayOffset * dayWidth + paddingLeft;
             dayRang.set(offset, top, offset + dayWidth, top + rowHeight);
             if (isFirstDay(day) || isLastDay(day)) {
-                if (selectStyle >= 0) {
-                    selectPaint.setColor(selectBgColor);
-                    drawSelectRange(canvas, dayRang, selectPaint);
+                if (selectBgDrawable != null) {
+                    selectBgDrawable.setBounds(dayRang.left, dayRang.top, dayRang.right, dayRang.bottom);
+                    selectBgDrawable.draw(canvas);
                 }
             }
             dayText = String.format(Locale.CANADA, "%d", day);
@@ -445,10 +440,9 @@ public class MonthView extends View {
             int firstRangeTop = getFirstRangeTop() + getPaddingTop();
             for (int day = firstDay + 1; day < lastDay; day++) {
                 int dayOffset = findDayOffset(firstYear, firstMonth, day);
-                float offset = dayOffset * dayWidth + getPaddingLeft();
+                int offset = dayOffset * dayWidth + getPaddingLeft();
                 selectRangeRect.set(offset, firstRangeTop, offset + dayWidth, firstRangeTop + rowHeight);
-                selectPaint.setColor(selectRangeBgColor);
-                drawSelectRange(canvas, selectRangeRect, selectPaint);
+                drawSelectRange(canvas, selectRangeRect);
                 if (columnNum - dayOffset == 1) {
                     firstRangeTop += (rowHeight + dividerHeight);
                 }
@@ -464,10 +458,9 @@ public class MonthView extends View {
                 int firstRangeTop = getFirstRangeTop() + getPaddingTop();
                 for (int day = firstDay + 1; day <= firstMonthMaxDay; day++) {
                     int dayOffset = findDayOffset(firstYear, firstMonth, day);
-                    float offset = dayOffset * dayWidth + getPaddingLeft();
+                    int offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, firstRangeTop, offset + dayWidth, firstRangeTop + rowHeight);
-                    selectPaint.setColor(selectRangeBgColor);
-                    drawSelectRange(canvas, selectRangeRect, selectPaint);
+                    drawSelectRange(canvas, selectRangeRect);
                     if (columnNum - dayOffset == 1) {
                         firstRangeTop += (rowHeight + dividerHeight);
                     }
@@ -478,10 +471,9 @@ public class MonthView extends View {
                 int lastRangeTop = getPaddingTop();
                 for (int day = 1; day < lastDay; day++) {
                     int dayOffset = findDayOffset(lastYear, lastMonth, day);
-                    float offset = dayOffset * dayWidth + getPaddingLeft();
+                    int offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, lastRangeTop, offset + dayWidth, lastRangeTop + rowHeight);
-                    selectPaint.setColor(selectRangeBgColor);
-                    drawSelectRange(canvas, selectRangeRect, selectPaint);
+                    drawSelectRange(canvas, selectRangeRect);
                     if (columnNum - dayOffset == 1) {
                         lastRangeTop += (rowHeight + dividerHeight);
                     }
@@ -496,10 +488,9 @@ public class MonthView extends View {
                 int monthMaxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                 for (int day = 1; day <= monthMaxDay; day++) {
                     int dayOffset = findDayOffset(year, month, day);
-                    float offset = dayOffset * dayWidth + getPaddingLeft();
+                    int offset = dayOffset * dayWidth + getPaddingLeft();
                     selectRangeRect.set(offset, top, offset + dayWidth, top + rowHeight);
-                    selectPaint.setColor(selectRangeBgColor);
-                    drawSelectRange(canvas, selectRangeRect, selectPaint);
+                    drawSelectRange(canvas, selectRangeRect);
                     if (columnNum - dayOffset == 1) {
                         top += (rowHeight + dividerHeight);
                     }
@@ -509,15 +500,10 @@ public class MonthView extends View {
     }
 
 
-    private void drawSelectRange(Canvas canvas, RectF dayRang, Paint selectPaint) {
-        switch (selectStyle) {
-            case 0:
-                canvas.drawRect(dayRang, selectPaint);
-                break;
-            case 1:
-                RectF rectF = new RectF(dayRang);
-                canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, selectPaint);
-                break;
+    private void drawSelectRange(Canvas canvas, Rect dayRang) {
+        if (selectRangeDrawable != null) {
+            selectRangeDrawable.setBounds(dayRang);
+            selectRangeDrawable.draw(canvas);
         }
     }
 

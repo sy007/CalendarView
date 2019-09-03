@@ -73,7 +73,7 @@ public class RangeSelectActivity extends AppCompatActivity {
                     }
                 })
                 //头部月份是否悬停
-                .setStick(false)
+                .setStick(true)
                 //是否展示头部月份
                 .setShowMonthTitleView(true)
                 //设置展示头部月份的回调用于创建头部月份View

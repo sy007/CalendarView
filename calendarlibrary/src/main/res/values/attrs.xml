@@ -9,22 +9,12 @@
         <attr name="monthPaddingTop" format="dimension" />
         <attr name="monthPaddingRight" format="dimension" />
         <attr name="monthPaddingBottom" format="dimension" />
-        <attr name="monthMarginLeft" format="dimension" />
-        <attr name="monthMarginTop" format="dimension" />
-        <attr name="monthMarginRight" format="dimension" />
-        <attr name="monthMarginBottom" format="dimension" />
-        <attr name="selectStyle" format="enum">
-            <enum name="rectangle" value="0" />
-            <enum name="roundRectangle" value="1" />
-        </attr>
         <attr name="cornerRadius" format="dimension" />
         <attr name="selectTextColor" format="color" />
         <attr name="weekendTextColor" format="color" />
-        <attr name="selectBgColor" format="color" />
         <attr name="disTextColor" format="color" />
         <attr name="sameTextColor" format="color" />
         <attr name="topTextColor" format="color" />
-        <attr name="selectRangebgColor" format="color" />
         <attr name="selectMaxRange" format="integer" />
         <attr name="textSize" format="dimension" />
         <attr name="topTextSize" format="dimension" />
@@ -37,6 +27,8 @@
         <attr name="firstSelectDayText" format="string" />
         <attr name="lastSelectDayText" format="string" />
         <attr name="rowHeight" format="dimension" />
+        <attr name="selectBgDrawable" format="reference" />
+        <attr name="selectRangeBgDrawable" format="reference" />
     </declare-styleable>
 
 

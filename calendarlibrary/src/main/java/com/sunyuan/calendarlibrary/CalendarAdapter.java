@@ -2,6 +2,7 @@ package com.sunyuan.calendarlibrary;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -21,11 +22,8 @@ import java.util.Objects;
 
 import static com.sunyuan.calendarlibrary.MonthView.ATTRS;
 import static com.sunyuan.calendarlibrary.MonthView.BOTTOM_TEXT_SIZE;
-import static com.sunyuan.calendarlibrary.MonthView.CORNER_RADIUS;
 import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_DIS_TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SAME_TEXT_COLOR;
-import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_BG_COLOR;
-import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_RANGE_BG_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_SELECT_TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.DEFAULT_TOP_TEXT_COLOR;
@@ -46,10 +44,9 @@ import static com.sunyuan.calendarlibrary.MonthView.ROW_HEIGHT;
 import static com.sunyuan.calendarlibrary.MonthView.SAME_TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.SECOND_TOP_MARGIN;
 import static com.sunyuan.calendarlibrary.MonthView.SELECTION_MODE;
-import static com.sunyuan.calendarlibrary.MonthView.SELECT_BG_COLOR;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_BG_DRAWABLE;
 import static com.sunyuan.calendarlibrary.MonthView.SELECT_MAX_RANGE;
-import static com.sunyuan.calendarlibrary.MonthView.SELECT_RANGE_BG_COLOR;
-import static com.sunyuan.calendarlibrary.MonthView.SELECT_STYLE;
+import static com.sunyuan.calendarlibrary.MonthView.SELECT_RANGE_BG_DRAWABLE;
 import static com.sunyuan.calendarlibrary.MonthView.SELECT_TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.TEXT_COLOR;
 import static com.sunyuan.calendarlibrary.MonthView.TEXT_SIZE;
@@ -73,10 +70,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
     private CalendarSelectDay<CalendarDay> calendarSelectDay;
     private OnCalendarSelectDayListener<CalendarDay> onCalendarSelectDayListener;
     private SparseArray<Date> monthTitleMap;
-    private int marginLeft;
-    private int marginTop;
-    private int marginRight;
-    private int marginBottom;
     private int itemCount;
     private SelectionMode selectionMode;
     private Calendar minCalendar;
@@ -93,20 +86,18 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         int rowHeight = (int) typedArray.getDimension(R.styleable.CalendarView_rowHeight, Utils.dip2px(context, 64));
         int textColor = typedArray.getColor(R.styleable.CalendarView_textColor, DEFAULT_TEXT_COLOR);
         int selectTextColor = typedArray.getColor(R.styleable.CalendarView_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
-        int selectBgColor = typedArray.getColor(R.styleable.CalendarView_selectBgColor, DEFAULT_SELECT_BG_COLOR);
+        Drawable selectBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_selectBgDrawable);
         int weekendTextColor = typedArray.getColor(R.styleable.CalendarView_weekendTextColor, DEFAULT_WEEKEND_TEXT_COLOR);
         int disTextColor = typedArray.getColor(R.styleable.CalendarView_disTextColor, DEFAULT_DIS_TEXT_COLOR);
         int topTextColor = typedArray.getColor(R.styleable.CalendarView_topTextColor, DEFAULT_TOP_TEXT_COLOR);
         int sameTextColor = typedArray.getColor(R.styleable.CalendarView_sameTextColor, DEFAULT_SAME_TEXT_COLOR);
-        int selectRangeBgColor = typedArray.getColor(R.styleable.CalendarView_selectRangebgColor, DEFAULT_SELECT_RANGE_BG_COLOR);
-
+        Drawable selectRangeBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_selectRangeBgDrawable);
         int defaultTopSize = Utils.sp2px(context, 10);
         int defaultTextSize = Utils.sp2px(context, 13);
         int defaultBottomTextSize = Utils.sp2px(context, 10);
         int defaultFirstTopMargin = Utils.dip2px(context, 5);
         int defaultSecondTopMargin = Utils.dip2px(context, 5);
         int defaultThirdTopMargin = Utils.dip2px(context, 5);
-        int defaultCornerRadius = Utils.dip2px(context, 3);
         int topTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_topTextSize, defaultTopSize);
         int textSize = (int) typedArray.getDimension(R.styleable.CalendarView_textSize, defaultTextSize);
         int bottomTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_bottomTextSize, defaultBottomTextSize);
@@ -116,22 +107,15 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         int selectMaxRange = typedArray.getInteger(R.styleable.CalendarView_selectMaxRange, MonthView.DEFAULT_SELECT_MAX_RANGE);
         int dividerHeight = (int) typedArray.getDimension(R.styleable.CalendarView_dividerHeight, MonthView.DEFAULT_DIVIDER_HEIGHT);
         int dividerColor = typedArray.getColor(R.styleable.CalendarView_dividerColor, MonthView.DEFAULT_DIVIDER_COLOR);
-        int selectStyle = typedArray.getInt(R.styleable.CalendarView_selectStyle, 0);
-        int cornerRadius = (int) typedArray.getDimension(R.styleable.CalendarView_cornerRadius, defaultCornerRadius);
         String firstSelectDayText = typedArray.getString(R.styleable.CalendarView_firstSelectDayText);
         String lastSelectDayText = typedArray.getString(R.styleable.CalendarView_lastSelectDayText);
 
-        marginLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginLeft, 0);
-        marginTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginTop, 0);
-        marginRight = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginRight, 0);
-        marginBottom = (int) typedArray.getDimension(R.styleable.CalendarView_monthMarginBottom, 0);
 
         int paddingLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingLeft, 0);
         int paddingTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingTop, 0);
         int paddingRight = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingRight, 0);
         int paddingBottom = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingBottom, 0);
-        ATTRS.put(SELECT_STYLE, selectStyle);
-        ATTRS.put(CORNER_RADIUS, cornerRadius);
+
         ATTRS.put(MONTH_PADDING_LEFT, paddingLeft);
         ATTRS.put(MONTH_PADDING_TOP, paddingTop);
         ATTRS.put(MONTH_PADDING_RIGHT, paddingRight);
@@ -139,8 +123,8 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         ATTRS.put(TOP_TEXT_COLOR, topTextColor);
         ATTRS.put(TEXT_COLOR, textColor);
         ATTRS.put(SELECT_TEXT_COLOR, selectTextColor);
-        ATTRS.put(SELECT_BG_COLOR, selectBgColor);
-        ATTRS.put(SELECT_RANGE_BG_COLOR, selectRangeBgColor);
+        ATTRS.put(SELECT_BG_DRAWABLE, selectBgDrawable);
+        ATTRS.put(SELECT_RANGE_BG_DRAWABLE, selectRangeBgDrawable);
         ATTRS.put(WEEKEND_TEXT_COLOR, weekendTextColor);
         ATTRS.put(DIS_TEXT_COLOR, disTextColor);
         ATTRS.put(SAME_TEXT_COLOR, sameTextColor);
@@ -163,9 +147,6 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
     public CalendarHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_month_view, viewGroup,
                 false);
-        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
-        layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
-        view.setLayoutParams(layoutParams);
         return new CalendarAdapter.CalendarHolder(view, this);
     }
 

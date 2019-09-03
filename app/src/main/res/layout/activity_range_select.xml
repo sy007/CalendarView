@@ -56,5 +56,9 @@
         sy:dividerHeight="5dp"
         sy:firstSelectDayText="入住"
         sy:lastSelectDayText="离店"
-        sy:selectMaxRange="120" />
+        sy:monthPaddingBottom="20dp"
+        sy:monthPaddingTop="20dp"
+        sy:selectBgDrawable="@drawable/drawable_select_bg"
+        sy:selectMaxRange="120"
+        sy:selectRangeBgDrawable="@drawable/drawable_select_range_bg" />
 </LinearLayout>

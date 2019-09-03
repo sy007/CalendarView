@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:background="#FF6E00"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_month_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="14dp"
         android:textColor="#333333"
         android:textSize="15sp"
+        android:textStyle="bold"
         tools:text="2019年1月" />
 </LinearLayout>
