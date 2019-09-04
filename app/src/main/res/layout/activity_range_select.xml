@@ -55,10 +55,13 @@
         android:background="#FFFFFF"
         sy:dividerHeight="5dp"
         sy:firstSelectDayText="入住"
+        sy:firstTopMargin="8dp"
         sy:lastSelectDayText="离店"
         sy:monthPaddingBottom="20dp"
         sy:monthPaddingTop="20dp"
+        sy:secondTopMargin="4dp"
         sy:selectBgDrawable="@drawable/drawable_select_bg"
         sy:selectMaxRange="120"
-        sy:selectRangeBgDrawable="@drawable/drawable_select_range_bg" />
+        sy:selectRangeBgDrawable="@drawable/drawable_select_range_bg"
+        sy:thirdTopMargin="4dp" />
 </LinearLayout>
