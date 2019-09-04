@@ -48,10 +48,10 @@ public class MonthLableView extends View {
         super(context, attrs, defStyleAttr);
         defaultLableTextSize = Utils.sp2px(context, 13);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MonthLableView);
-        weekendTextColor = typedArray.getColor(R.styleable.MonthLableView_lableWeekendTextColor, defaultLableWeekendTextColor);
-        textColor = typedArray.getColor(R.styleable.MonthLableView_lableTextColor, defaultLableTextColor);
-        textSize = typedArray.getDimension(R.styleable.MonthLableView_lableTextSize, defaultLableTextSize);
-        lableArr = typedArray.getTextArray(R.styleable.MonthLableView_lableArr);
+        weekendTextColor = typedArray.getColor(R.styleable.MonthLableView_cl_lableWeekendTextColor, defaultLableWeekendTextColor);
+        textColor = typedArray.getColor(R.styleable.MonthLableView_cl_lableTextColor, defaultLableTextColor);
+        textSize = typedArray.getDimension(R.styleable.MonthLableView_cl_lableTextSize, defaultLableTextSize);
+        lableArr = typedArray.getTextArray(R.styleable.MonthLableView_cl_lableArr);
         if (lableArr == null) {
             lableArr = LABLE_ARR;
         }

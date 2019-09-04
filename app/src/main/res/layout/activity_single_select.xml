@@ -30,10 +30,10 @@
         android:background="#FAFAFA"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        sy:lableArr="@array/month_view_lable_arr"
-        sy:lableTextColor="#333333"
-        sy:lableTextSize="13sp"
-        sy:lableWeekendTextColor="#FF6E00" />
+        sy:cl_lableArr="@array/month_view_lable_arr"
+        sy:cl_lableTextColor="#333333"
+        sy:cl_lableTextSize="13sp"
+        sy:cl_lableWeekendTextColor="#FF6E00" />
     <!--日历-->
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
