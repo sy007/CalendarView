@@ -33,7 +33,7 @@
         sy:lableArr="@array/month_view_lable_arr"
         sy:lableTextColor="#333333"
         sy:lableTextSize="13sp"
-        sy:lableWeekendTextColor="#333333" />
+        sy:lableWeekendTextColor="#FF6E00" />
     <!--日历-->
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
@@ -41,20 +41,19 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         sy:bottomTextSize="10sp"
-        sy:disTextColor="#999999"
-        sy:dividerColor="#E8E8E8"
-        sy:dividerHeight="1px"
+        sy:disTextColor="#BBBBBB"
         sy:firstSelectDayText="出发"
-        sy:firstTopMargin="10dp"
-        sy:rowHeight="64dp"
+        sy:firstTopMargin="8dp"
+        sy:rowHeight="62dp"
         sy:sameTextColor="#333333"
-        sy:secondTopMargin="5dp"
+        sy:secondTopMargin="4dp"
         sy:selectBgDrawable="@drawable/drawable_select_bg"
         sy:selectTextColor="#FFFFFF"
         sy:textColor="#333333"
         sy:textSize="16sp"
-        sy:thirdTopMargin="5dp"
-        sy:topTextColor="#333333"
+        sy:textStyle="bold"
+        sy:thirdTopMargin="4dp"
+        sy:topTextColor="#FF6E00"
         sy:topTextSize="10sp"
         sy:weekendTextColor="#FF6E00" />
 </LinearLayout>

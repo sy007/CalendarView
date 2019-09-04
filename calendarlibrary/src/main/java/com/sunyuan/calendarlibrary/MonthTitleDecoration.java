@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -80,13 +82,11 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 View view = parent.getChildAt(i);
                 int index = parent.getChildAdapterPosition(view);
                 View monthTitleView;
-                if (monthTitleViewMap.get(index) == null ) {
+                if (monthTitleViewMap.get(index) == null) {
                     Date monthDate = monthDateCallback.getMonthDate(index);
                     monthTitleView = monthTitleViewCallBack.getMonthTitleView(index, monthDate);
-                    monthTitleView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    ensureViewLayout(monthTitleView, parent);
                     monthTitleViewMap.put(index, monthTitleView);
-                    monthTitleView.layout(0, 0, parent.getWidth(), monthTitleHeight);
                 } else {
                     monthTitleView = monthTitleViewMap.get(index);
                 }
@@ -109,6 +109,26 @@ public class MonthTitleDecoration extends RecyclerView.ItemDecoration {
                 c.restore();
             }
         }
+    }
+
+    private void ensureViewLayout(View monthTitleView, RecyclerView recyclerView) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) monthTitleView.getLayoutParams();
+        int widthSpec;
+        int heightSpec;
+        if (layoutParams != null) {
+            widthSpec = View.MeasureSpec.makeMeasureSpec(
+                    recyclerView.getMeasuredWidth() - layoutParams.leftMargin - layoutParams.rightMargin, View.MeasureSpec.EXACTLY);
+            if (layoutParams.height > 0) {
+                heightSpec = View.MeasureSpec.makeMeasureSpec(layoutParams.height, View.MeasureSpec.EXACTLY);
+            } else {
+                heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            }
+        } else {
+            widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View.MeasureSpec.EXACTLY);
+            heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        }
+        monthTitleView.measure(widthSpec, heightSpec);
+        monthTitleView.layout(0, 0, monthTitleView.getMeasuredWidth(), monthTitleView.getMeasuredHeight());
     }
 
     /**

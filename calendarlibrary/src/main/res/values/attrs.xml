@@ -15,6 +15,10 @@
         <attr name="topTextColor" format="color" />
         <attr name="selectMaxRange" format="integer" />
         <attr name="textSize" format="dimension" />
+        <attr name="textStyle" format="flags">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />>
+        </attr>
         <attr name="topTextSize" format="dimension" />
         <attr name="bottomTextSize" format="dimension" />
         <attr name="firstTopMargin" format="dimension" />

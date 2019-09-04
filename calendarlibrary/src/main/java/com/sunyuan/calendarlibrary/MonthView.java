@@ -1,5 +1,6 @@
 package com.sunyuan.calendarlibrary;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -45,6 +46,7 @@ public class MonthView extends View {
     private int toDay;
     private Rect dayRang;
     private static final int MONTH_IN_YEAR = 12;
+    private static final String MEASURE_TEXT = "\u5b57";
 
 
     /**
@@ -76,6 +78,7 @@ public class MonthView extends View {
     public static final String DIVIDER_COLOR = "DIVIDER_COLOR";
     public static final String TOP_SIZE = "TOP_SIZE";
     public static final String TEXT_SIZE = "TEXT_SIZE";
+    public static final String TEXT_STYLE = "TEXT_STYLE";
     public static final String BOTTOM_TEXT_SIZE = "BOTTOM_TEXT_SIZE";
     public static final String FIRST_TOP_MARGIN = "FIRST_TOP_MARGIN";
     public static final String SECOND_TOP_MARGIN = "SECOND_TOP_MARGIN";
@@ -115,6 +118,7 @@ public class MonthView extends View {
     private int disTextColor;
     private int bottomTextSize;
     private int textSize;
+    private int textStyle;
     private int topTextSize;
     private int firstTopMargin;
     private int secondTopMargin;
@@ -146,6 +150,12 @@ public class MonthView extends View {
     private Drawable selectBgDrawable;
     private Drawable selectRangeDrawable;
 
+    /**
+     * 用于放置日期字体高度
+     */
+    private Rect textHeightRect = new Rect();
+
+
     public MonthView(Context context) {
         this(context, null);
     }
@@ -170,6 +180,7 @@ public class MonthView extends View {
         sameTextColor = (int) ATTRS.get(SAME_TEXT_COLOR);
         topTextSize = (int) ATTRS.get(TOP_SIZE);
         textSize = (int) ATTRS.get(TEXT_SIZE);
+        textStyle = (int) ATTRS.get(TEXT_STYLE);
         bottomTextSize = (int) ATTRS.get(BOTTOM_TEXT_SIZE);
         firstTopMargin = (int) ATTRS.get(FIRST_TOP_MARGIN);
         secondTopMargin = (int) ATTRS.get(SECOND_TOP_MARGIN);
@@ -209,11 +220,17 @@ public class MonthView extends View {
         dayPaint.setColor(textColor);
         dayPaint.setTextAlign(Paint.Align.CENTER);
         dayPaint.setTextSize(textSize);
-
-
+        int flags = Paint.ANTI_ALIAS_FLAG;
+        switch (textStyle) {
+            case 0:
+                dayPaint.setFlags(flags);
+                break;
+            case 1:
+                dayPaint.setFlags(flags | Paint.FAKE_BOLD_TEXT_FLAG);
+                break;
+        }
         dividerPaint = new Paint();
         dividerPaint.setColor(dividerColor);
-
 
         firstSelectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         firstSelectPaint.setTextSize(topTextSize);
@@ -236,7 +253,11 @@ public class MonthView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        //这里宽度存在除不尽情况
         dayWidth = ((w - (getPaddingLeft() + getPaddingRight())) / columnNum);
+        //将多余的宽度平均分给两边的padding
+        int halfRemainWidth = ((w - getPaddingLeft() - getPaddingRight()) % columnNum) / 2;
+        setPadding(getPaddingLeft() + halfRemainWidth, getPaddingTop(), getPaddingRight() + halfRemainWidth, getPaddingBottom());
     }
 
     @Override

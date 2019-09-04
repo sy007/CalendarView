@@ -38,6 +38,7 @@ public class SingleSelectActivity extends AppCompatActivity {
         tvCurrentSelectDate.setText(currentSelectDayStr);
         Calendar calendar = Calendar.getInstance();
         Date minDate = calendar.getTime();
+        calendar.add(Calendar.MONTH, 1);
         calendar.add(Calendar.DATE, 25);
         Date maxDate = calendar.getTime();
         CalendarViewWrapper.wrap(calendarView)

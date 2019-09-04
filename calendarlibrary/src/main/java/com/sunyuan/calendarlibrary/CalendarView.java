@@ -59,7 +59,7 @@ public class CalendarView extends RecyclerView {
         return calendarAdapter.covertToPosition(calendarDay);
     }
 
-    public void display(CalendarViewWrapper.CalendarBuilder calendarBuilder) {
+    void display(CalendarViewWrapper.CalendarBuilder calendarBuilder) {
         MonthTitleViewCallBack monthTitleViewCallBack = calendarBuilder.monthTitleViewCallBack;
         boolean isStick = calendarBuilder.isStick;
         boolean isShowMonthTitleView = calendarBuilder.isShowMonthTitleView;
