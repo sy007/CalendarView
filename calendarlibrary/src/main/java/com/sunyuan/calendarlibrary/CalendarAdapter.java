@@ -84,32 +84,32 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
 
 
     private void parseTypedArray(Context context, TypedArray typedArray) {
-        int rowHeight = (int) typedArray.getDimension(R.styleable.CalendarView_rowHeight, Utils.dip2px(context, 64));
-        int textColor = typedArray.getColor(R.styleable.CalendarView_textColor, DEFAULT_TEXT_COLOR);
-        int selectTextColor = typedArray.getColor(R.styleable.CalendarView_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
-        Drawable selectBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_selectBgDrawable);
-        int weekendTextColor = typedArray.getColor(R.styleable.CalendarView_weekendTextColor, DEFAULT_WEEKEND_TEXT_COLOR);
-        int disTextColor = typedArray.getColor(R.styleable.CalendarView_disTextColor, DEFAULT_DIS_TEXT_COLOR);
-        int topTextColor = typedArray.getColor(R.styleable.CalendarView_topTextColor, DEFAULT_TOP_TEXT_COLOR);
-        int sameTextColor = typedArray.getColor(R.styleable.CalendarView_sameTextColor, DEFAULT_SAME_TEXT_COLOR);
-        Drawable selectRangeBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_selectRangeBgDrawable);
-        int topTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_topTextSize, Utils.sp2px(context, 10));
-        int textSize = (int) typedArray.getDimension(R.styleable.CalendarView_textSize, Utils.sp2px(context, 13));
-        int textStyle = typedArray.getInt(R.styleable.CalendarView_textStyle, 0);
-        int bottomTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_bottomTextSize, Utils.sp2px(context, 10));
-        int firstTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_firstTopMargin, 0);
-        int secondTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_secondTopMargin, 0);
-        int thirdTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_thirdTopMargin, 0);
-        int selectMaxRange = typedArray.getInteger(R.styleable.CalendarView_selectMaxRange, MonthView.DEFAULT_SELECT_MAX_RANGE);
-        int dividerHeight = (int) typedArray.getDimension(R.styleable.CalendarView_dividerHeight, MonthView.DEFAULT_DIVIDER_HEIGHT);
-        int dividerColor = typedArray.getColor(R.styleable.CalendarView_dividerColor, MonthView.DEFAULT_DIVIDER_COLOR);
-        String firstSelectDayText = typedArray.getString(R.styleable.CalendarView_firstSelectDayText);
-        String lastSelectDayText = typedArray.getString(R.styleable.CalendarView_lastSelectDayText);
+        int rowHeight = (int) typedArray.getDimension(R.styleable.CalendarView_cl_rowHeight, Utils.dip2px(context, 64));
+        int textColor = typedArray.getColor(R.styleable.CalendarView_cl_textColor, DEFAULT_TEXT_COLOR);
+        int selectTextColor = typedArray.getColor(R.styleable.CalendarView_cl_selectTextColor, DEFAULT_SELECT_TEXT_COLOR);
+        Drawable selectBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_cl_selectBgDrawable);
+        int weekendTextColor = typedArray.getColor(R.styleable.CalendarView_cl_weekendTextColor, DEFAULT_WEEKEND_TEXT_COLOR);
+        int disTextColor = typedArray.getColor(R.styleable.CalendarView_cl_disTextColor, DEFAULT_DIS_TEXT_COLOR);
+        int topTextColor = typedArray.getColor(R.styleable.CalendarView_cl_topTextColor, DEFAULT_TOP_TEXT_COLOR);
+        int sameTextColor = typedArray.getColor(R.styleable.CalendarView_cl_sameTextColor, DEFAULT_SAME_TEXT_COLOR);
+        Drawable selectRangeBgDrawable = typedArray.getDrawable(R.styleable.CalendarView_cl_selectRangeBgDrawable);
+        int topTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_cl_topTextSize, Utils.sp2px(context, 10));
+        int textSize = (int) typedArray.getDimension(R.styleable.CalendarView_cl_textSize, Utils.sp2px(context, 13));
+        int textStyle = typedArray.getInt(R.styleable.CalendarView_cl_textStyle, 0);
+        int bottomTextSize = (int) typedArray.getDimension(R.styleable.CalendarView_cl_bottomTextSize, Utils.sp2px(context, 10));
+        int firstTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_cl_firstTopMargin, 0);
+        int secondTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_cl_secondTopMargin, 0);
+        int thirdTopMargin = (int) typedArray.getDimension(R.styleable.CalendarView_cl_thirdTopMargin, 0);
+        int selectMaxRange = typedArray.getInteger(R.styleable.CalendarView_cl_selectMaxRange, MonthView.DEFAULT_SELECT_MAX_RANGE);
+        int dividerHeight = (int) typedArray.getDimension(R.styleable.CalendarView_cl_dividerHeight, MonthView.DEFAULT_DIVIDER_HEIGHT);
+        int dividerColor = typedArray.getColor(R.styleable.CalendarView_cl_dividerColor, MonthView.DEFAULT_DIVIDER_COLOR);
+        String firstSelectDayText = typedArray.getString(R.styleable.CalendarView_cl_firstSelectDayText);
+        String lastSelectDayText = typedArray.getString(R.styleable.CalendarView_cl_lastSelectDayText);
 
-        int paddingLeft = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingLeft, 0);
-        int paddingTop = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingTop, 0);
-        int paddingRight = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingRight, 0);
-        int paddingBottom = (int) typedArray.getDimension(R.styleable.CalendarView_monthPaddingBottom, 0);
+        int paddingLeft = (int) typedArray.getDimension(R.styleable.CalendarView_cl_monthPaddingLeft, 0);
+        int paddingTop = (int) typedArray.getDimension(R.styleable.CalendarView_cl_monthPaddingTop, 0);
+        int paddingRight = (int) typedArray.getDimension(R.styleable.CalendarView_cl_monthPaddingRight, 0);
+        int paddingBottom = (int) typedArray.getDimension(R.styleable.CalendarView_cl_monthPaddingBottom, 0);
 
         ATTRS.put(MONTH_PADDING_LEFT, paddingLeft);
         ATTRS.put(MONTH_PADDING_TOP, paddingTop);

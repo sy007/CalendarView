@@ -80,7 +80,7 @@ public class RangeSelectActivity extends AppCompatActivity {
                 .setMonthTitleViewCallBack(new MonthTitleViewCallBack() {
                     @Override
                     public View getMonthTitleView(int position, Date date) {
-                        View view = View.inflate(RangeSelectActivity.this, R.layout.layout_month_title, null);
+                        View view = View.inflate(RangeSelectActivity.this, R.layout.layout_calendar_month_title, null);
                         TextView tvMonthTitle = view.findViewById(R.id.tv_month_title);
                         tvMonthTitle.setText(formatDate("yyyy年MM月", date));
                         return view;

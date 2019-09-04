@@ -2,35 +2,35 @@
 <resources>
     <!--monthView-->
     <declare-styleable name="CalendarView">
-        <attr name="textColor" format="color" />
-        <attr name="monthPaddingLeft" format="dimension" />
-        <attr name="monthPaddingTop" format="dimension" />
-        <attr name="monthPaddingRight" format="dimension" />
-        <attr name="monthPaddingBottom" format="dimension" />
-        <attr name="cornerRadius" format="dimension" />
-        <attr name="selectTextColor" format="color" />
-        <attr name="weekendTextColor" format="color" />
-        <attr name="disTextColor" format="color" />
-        <attr name="sameTextColor" format="color" />
-        <attr name="topTextColor" format="color" />
-        <attr name="selectMaxRange" format="integer" />
-        <attr name="textSize" format="dimension" />
-        <attr name="textStyle" format="flags">
+        <attr name="cl_textColor" format="color" />
+        <attr name="cl_monthPaddingLeft" format="dimension" />
+        <attr name="cl_monthPaddingTop" format="dimension" />
+        <attr name="cl_monthPaddingRight" format="dimension" />
+        <attr name="cl_monthPaddingBottom" format="dimension" />
+        <attr name="cl_cornerRadius" format="dimension" />
+        <attr name="cl_selectTextColor" format="color" />
+        <attr name="cl_weekendTextColor" format="color" />
+        <attr name="cl_disTextColor" format="color" />
+        <attr name="cl_sameTextColor" format="color" />
+        <attr name="cl_topTextColor" format="color" />
+        <attr name="cl_selectMaxRange" format="integer" />
+        <attr name="cl_textSize" format="dimension" />
+        <attr name="cl_textStyle" format="flags">
             <flag name="normal" value="0" />
             <flag name="bold" value="1" />>
         </attr>
-        <attr name="topTextSize" format="dimension" />
-        <attr name="bottomTextSize" format="dimension" />
-        <attr name="firstTopMargin" format="dimension" />
-        <attr name="secondTopMargin" format="dimension" />
-        <attr name="thirdTopMargin" format="dimension" />
-        <attr name="dividerHeight" format="dimension" />
-        <attr name="dividerColor" format="color" />
-        <attr name="firstSelectDayText" format="string" />
-        <attr name="lastSelectDayText" format="string" />
-        <attr name="rowHeight" format="dimension" />
-        <attr name="selectBgDrawable" format="reference" />
-        <attr name="selectRangeBgDrawable" format="reference" />
+        <attr name="cl_topTextSize" format="dimension" />
+        <attr name="cl_bottomTextSize" format="dimension" />
+        <attr name="cl_firstTopMargin" format="dimension" />
+        <attr name="cl_secondTopMargin" format="dimension" />
+        <attr name="cl_thirdTopMargin" format="dimension" />
+        <attr name="cl_dividerHeight" format="dimension" />
+        <attr name="cl_dividerColor" format="color" />
+        <attr name="cl_firstSelectDayText" format="string" />
+        <attr name="cl_lastSelectDayText" format="string" />
+        <attr name="cl_rowHeight" format="dimension" />
+        <attr name="cl_selectBgDrawable" format="reference" />
+        <attr name="cl_selectRangeBgDrawable" format="reference" />
     </declare-styleable>
 
 
@@ -40,5 +40,4 @@
         <attr name="lableTextSize" format="dimension" />
         <attr name="lableArr" format="reference" />
     </declare-styleable>
-
 </resources>
