@@ -24,33 +24,32 @@ RecycleView实现日历列表,其中每个itemView纯cavas绘制。
         android:background="#FAFAFA"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        sy:lableArr="@array/month_view_lable_arr"
-        sy:lableTextColor="#333333"
-        sy:lableTextSize="13sp"
-        sy:lableWeekendTextColor="#333333" />
+        sy:cl_lableArr="@array/month_view_lable_arr"
+        sy:cl_lableTextColor="#333333"
+        sy:cl_lableTextSize="13sp"
+        sy:cl_lableWeekendTextColor="#FF6E00" />
     <!--日历-->
     <com.sunyuan.calendarlibrary.CalendarView
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
-        sy:bottomTextSize="10sp"
-        sy:disTextColor="#999999"
-        sy:dividerColor="#E8E8E8"
-        sy:dividerHeight="1px"
-        sy:firstSelectDayText="出发"
-        sy:firstTopMargin="10dp"
-        sy:rowHeight="64dp"
-        sy:sameTextColor="#333333"
-        sy:secondTopMargin="5dp"
-        sy:selectBgDrawable="@drawable/drawable_select_bg"
-        sy:selectTextColor="#FFFFFF"
-        sy:textColor="#333333"
-        sy:textSize="16sp"
-        sy:thirdTopMargin="5dp"
-        sy:topTextColor="#333333"
-        sy:topTextSize="10sp"
-        sy:weekendTextColor="#FF6E00" />
+        sy:cl_bottomTextSize="10sp"
+        sy:cl_disTextColor="#BBBBBB"
+        sy:cl_firstSelectDayText="出发"
+        sy:cl_firstTopMargin="8dp"
+        sy:cl_rowHeight="62dp"
+        sy:cl_sameTextColor="#333333"
+        sy:cl_secondTopMargin="4dp"
+        sy:cl_selectBgDrawable="@drawable/drawable_calendar_select_bg"
+        sy:cl_selectTextColor="#FFFFFF"
+        sy:cl_textColor="#333333"
+        sy:cl_textSize="16sp"
+        sy:cl_textStyle="bold"
+        sy:cl_thirdTopMargin="4dp"
+        sy:cl_topTextColor="#FF6E00"
+        sy:cl_topTextSize="10sp"
+        sy:cl_weekendTextColor="#FF6E00" />
 ````
 
 ### XML 自定义属性
@@ -59,38 +58,38 @@ MonthLableView(星期)
 
 |属性 | 类型 | 描述 |
 | :------------------------- | --------- | ---------------------------------- |
-| lableWeekendTextColor | color | 周末字体颜色 |
-| lableTextColor | color | 周一到周五字体颜色 |
-| lableTextSize | color | 字体大小 |
-| lableArr | reference | 星期展示的文案 |
+| cl_lableWeekendTextColor | color | 周末字体颜色 |
+| cl_lableTextColor | color | 周一到周五字体颜色 |
+| cl_lableTextSize | color | 字体大小 |
+| cl_lableArr | reference | 星期展示的文案 |
 
 CalendarView(日历)
 
 | 属性 | 类型 | 描述 | 
 | :------------------------- | --------- | ---------------------------------- |
-| textColor | color | 日历天字体颜色 |
-| selectTextColor | color | 选中字体颜色 |
-| weekendTextColor | color | 周末字体颜色 |
-| disTextColor | color | 不可选字体颜色 |
-| sameTextColor | color | 今天字体颜色 |
-| topTextColor | color | 节日字体颜色 |
-| selectMaxRange | integer | 限制最大可选多少天 |
-| monthPaddingLeft | dimension | 月份paddingLeft |
-| monthPaddingTop | dimension | 月份paddingTop |
-| monthPaddingRight | dimension | 月份paddingRight |
-| monthPaddingBottom | dimension | 月份paddingBottom |
-|textSize | dimension | 日历天字体大小 |
-| topTextSize | dimension | 节日字体大小 |
-| bottomTextSize | dimension | 选中底部文案字体大小 |
-| firstTopMargin | dimension | 节日距离顶部距离 |
-| secondTopMargin | dimension | 天距离节日底部距离 |
-| thirdTopMargin | dimension | 选中文案距离天底部距离 |
-| dividerHeight | dimension | 日历每一行间距 |
-| dividerColor | color | 日历每一行间距颜色 |
-| firstSelectDayText | string | 第一次选中底部文案 |
-| lastSelectDayText | string | 最后一次选中底部文案 |
-| selectBgDrawable| reference | 选中样式 |
-| selectRangeBgDrawable | reference | 选中范围样式 |
+| cl_textColor | color | 日历天字体颜色 |
+| cl_selectTextColor | color | 选中字体颜色 |
+| cl_weekendTextColor | color | 周末字体颜色 |
+| cl_disTextColor | color | 不可选字体颜色 |
+| cl_sameTextColor | color | 今天字体颜色 |
+| cl_topTextColor | color | 节日字体颜色 |
+| cl_selectMaxRange | integer | 限制最大可选多少天 |
+| cl_monthPaddingLeft | dimension | 月份paddingLeft |
+| cl_monthPaddingTop | dimension | 月份paddingTop |
+| cl_monthPaddingRight | dimension | 月份paddingRight |
+| cl_monthPaddingBottom | dimension | 月份paddingBottom |
+| cl_textSize | dimension | 日历天字体大小 |
+| cl_topTextSize | dimension | 节日字体大小 |
+| cl_bottomTextSize | dimension | 选中底部文案字体大小 |
+| cl_firstTopMargin | dimension | 节日距离顶部距离 |
+| cl_secondTopMargin | dimension | 天距离节日底部距离 |
+| cl_thirdTopMargin | dimension | 选中文案距离天底部距离 |
+| cl_dividerHeight | dimension | 日历每一行间距 |
+| cl_dividerColor | color | 日历每一行间距颜色 |
+| cl_firstSelectDayText | string | 第一次选中底部文案 |
+| cl_lastSelectDayText | string | 最后一次选中底部文案 |
+| cl_selectBgDrawable| reference | 选中样式 |
+| cl_selectRangeBgDrawable | reference | 选中范围样式 |
 
 
 ### 代码
