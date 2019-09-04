@@ -79,6 +79,7 @@ CalendarView(日历)
 | cl_monthPaddingRight | dimension | 月份paddingRight |
 | cl_monthPaddingBottom | dimension | 月份paddingBottom |
 | cl_textSize | dimension | 日历天字体大小 |
+| cl_textStyle | flags | 日历天字体样式 |
 | cl_topTextSize | dimension | 节日字体大小 |
 | cl_bottomTextSize | dimension | 选中底部文案字体大小 |
 | cl_firstTopMargin | dimension | 节日距离顶部距离 |
@@ -90,6 +91,7 @@ CalendarView(日历)
 | cl_lastSelectDayText | string | 最后一次选中底部文案 |
 | cl_selectBgDrawable| reference | 选中样式 |
 | cl_selectRangeBgDrawable | reference | 选中范围样式 |
+| cl_rowHeight | dimension | 日历行高 |
 
 
 ### 代码
