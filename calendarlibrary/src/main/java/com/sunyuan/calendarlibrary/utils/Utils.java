@@ -36,8 +36,6 @@ public class Utils {
         int yearStart = start.get(Calendar.YEAR);
         int monthEnd = end.get(Calendar.MONTH);
         int monthStart = start.get(Calendar.MONTH);
-        int endDayInt = end.get(Calendar.DAY_OF_MONTH);
-        int startDayInt = start.get(Calendar.DAY_OF_MONTH);
         if (yearStart == yearEnd && monthStart == monthEnd) {
             return 0;
         }
@@ -47,9 +45,6 @@ public class Utils {
         }
         // 获取月数差值
         int monthInterval = (monthEnd + 12) - monthStart;
-        if (endDayInt < startDayInt) {
-            monthInterval--;
-        }
         monthInterval %= 12;
         return yearInterval * 12 + monthInterval;
     }
