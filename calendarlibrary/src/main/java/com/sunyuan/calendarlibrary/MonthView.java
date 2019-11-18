@@ -541,8 +541,13 @@ public class MonthView extends View {
     }
 
     private boolean isPreDay(int day) {
-        return year <= toYear && month <= toMonth
-                && day < toDay;
+        if (year < toYear) {
+            return true;
+        }
+        if (year == toYear && month < toMonth) {
+            return true;
+        }
+        return year == toYear && month == toMonth && day < toDay;
     }
 
 
