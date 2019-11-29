@@ -5,6 +5,8 @@ import android.content.Context;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
 /**
@@ -52,30 +54,26 @@ public class Utils {
     /**
      * 获取两个日期 天数差
      *
-     * @param start
-     * @param end
+     * @param calendar1
+     * @param calendar2
      * @return
      */
-    public static int getDayDiff(Calendar start, Calendar end) {
-        int startDay = start.get(Calendar.DAY_OF_YEAR);
-        int endDay = end.get(Calendar.DAY_OF_YEAR);
-        int startYear = start.get(Calendar.YEAR);
-        int endYear = end.get(Calendar.YEAR);
-        if (startYear != endYear) {
-            int timeDistance = 0;
-            for (int i = startYear; i < endYear; i++) {
-                //闰年
-                if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0) {
-                    timeDistance += 366;
-                } else {
-                    //不是闰年
-                    timeDistance += 365;
-                }
-            }
-            return timeDistance + (endDay - startDay);
+    public static int getOffectDay(Calendar calendar1, Calendar calendar2) {
+        int y1 = calendar1.get(Calendar.YEAR);
+        int y2 = calendar2.get(Calendar.YEAR);
+        int d1 = calendar1.get(Calendar.DAY_OF_YEAR);
+        int d2 = calendar2.get(Calendar.DAY_OF_YEAR);
+        int maxDays;
+        int day;
+        if (y1 - y2 > 0) {
+            maxDays = calendar2.getActualMaximum(Calendar.DAY_OF_YEAR);
+            day = d1 - d2 + maxDays;
+        } else if (y1 - y2 < 0) {
+            maxDays = calendar1.getActualMaximum(Calendar.DAY_OF_YEAR);
+            day = d1 - d2 - maxDays;
         } else {
-            //同一年
-            return endDay - startDay;
+            day = Math.abs(d1 - d2);
         }
+        return day;
     }
 }

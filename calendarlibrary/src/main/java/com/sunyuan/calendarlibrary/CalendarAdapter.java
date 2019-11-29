@@ -210,16 +210,12 @@ final class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calenda
         int calMonth = calendarDay.toCalendar().get(Calendar.MONTH);
         int minYear = minCalendar.get(Calendar.YEAR);
         int minMonth = minCalendar.get(Calendar.MONTH);
-        int maxYear = maxCalendar.get(Calendar.YEAR);
-        int maxMonth = maxCalendar.get(Calendar.MONTH);
-        int calToMaxCalDiffMonth = (maxYear * MONTH_IN_YEAR + maxMonth) - (calYear * MONTH_IN_YEAR + calMonth);
-        int calToMinCalDiffMonth = (calYear * MONTH_IN_YEAR + calMonth) - (minYear * MONTH_IN_YEAR + minMonth);
-        if (calToMaxCalDiffMonth < 0 || calToMinCalDiffMonth < 0) {
+        int pos = (calYear * MONTH_IN_YEAR + calMonth) - (minYear * MONTH_IN_YEAR + minMonth);
+        if (pos < 0) {
             return -1;
         }
-        int position = (calToMinCalDiffMonth % MONTH_IN_YEAR) + ((calToMaxCalDiffMonth / MONTH_IN_YEAR) * MONTH_IN_YEAR);
-        CalendarLog.d("position:" + position);
-        return position;
+        CalendarLog.d("position:" + pos);
+        return pos;
     }
 
 

@@ -310,7 +310,7 @@ public class MonthView extends View {
                 yDay * columnNum;
 
         if (dayOfMonth(year, month) < day || day < 1 || isPreDay(day) || isMaxSelectDay(day) ||
-                (SelectionMode.RANGE == selectionMode && isMaxRange(day))) {
+                isOverMaxRange(day)) {
             return null;
         }
 
@@ -348,7 +348,7 @@ public class MonthView extends View {
                     drawSelectDayText(canvas, lastSelectDayText);
                 }
             } else {
-                if (isPreDay(day) || isMaxSelectDay(day) || (SelectionMode.RANGE == selectionMode && isMaxRange(day))) {
+                if (isPreDay(day) || isMaxSelectDay(day) || isOverMaxRange(day)) {
                     firstSelectPaint.setColor(disTextColor);
                     dayPaint.setColor(disTextColor);
                 } else {
@@ -558,10 +558,30 @@ public class MonthView extends View {
         return totalMonth > firstTotalMonth && totalMonth < lastTotalMonth;
     }
 
-    private boolean isMaxRange(int day) {
+
+    /**
+     * 是否超过选择范围
+     *
+     * @param day
+     * @return
+     */
+    private boolean isOverMaxRange(int day) {
+        if (SelectionMode.SINGLE == selectionMode) {
+            return false;
+        }
+        //如果没有选择日期或者选择范围为0,则当前展示的所有日期可以选择
         if (firstDay == -1 || selectMaxRange == DEFAULT_SELECT_MAX_RANGE) {
             return false;
         }
+        //如果当前日期在第一次选中日期之前，那么直接return false。当前日期可以被选择的
+        if (year < firstYear) {
+            return false;
+        }
+        if (year == firstYear && month < firstMonth) {
+            return false;
+        }
+        //如果当前日期和第一次选中日期在同一个月，或者比第一次选择日期大，那么此时可以根据两个日期的天数差和可选择的天数范围比较
+        //超过则不可选择,没超过则可以选择
         return (curToFirstDayDiff + day - 1) > selectMaxRange;
     }
 
@@ -599,8 +619,8 @@ public class MonthView extends View {
             currentCalendar.set(Calendar.YEAR, year);
             currentCalendar.set(Calendar.MONTH, month);
             currentCalendar.set(Calendar.DATE, 1);
-            //第一次选中日期到当前展示月份的差
-            curToFirstDayDiff = Utils.getDayDiff(firstCalendar, currentCalendar);
+            //第一次选中日期到当前展示月份的天数差
+            curToFirstDayDiff = Utils.getOffectDay(firstCalendar, currentCalendar);
         }
         rowNum = calculateNumRows();
         requestLayout();

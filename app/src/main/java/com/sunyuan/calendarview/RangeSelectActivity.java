@@ -43,7 +43,7 @@ public class RangeSelectActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
         Date minDate = calendar.getTime();
-        calendar.add(Calendar.MONTH, 2);
+        calendar.add(Calendar.MONTH, 12);
         Date maxDate = calendar.getTime();
         CalendarViewWrapper.wrap(calendarView)
                 //设置最大最小日期范围 展示三个月数据
