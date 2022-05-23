@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sy="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_current_single_select_container"
+            layout="@layout/layout_current_single_select_date" />
+<!--星期-->
+<com.sy007.calendar.widget.WeekView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    sy:wv_content="@array/week_sunday_to_saturday"
+    sy:wv_text_color="#333333"
+    sy:wv_text_size="13sp" />
+<!--日历-->
+<com.sy007.calendar.widget.CalendarView
+    android:id="@+id/cv_single_calendar_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+    </LinearLayout>
+</FrameLayout>

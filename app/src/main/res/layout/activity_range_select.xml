@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sy="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".RangeSelectActivity">
+    android:background="#FFFFFF"
+    tools:context=".simple.range.RangeSelectActivity">
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="入住:" />
-
-        <TextView
-            android:id="@+id/tv_first_select_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="离店:" />
-
-        <TextView
-            android:id="@+id/tv_last_select_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-    <com.sunyuan.calendarlibrary.MonthLableView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp" />
+        android:orientation="vertical">
 
-    <com.sunyuan.calendarlibrary.CalendarView
-        android:id="@+id/calendar_view"
-        android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="入住:"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_first_selected_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="离店:"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_last_selected_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+
+        <!--星期-->
+        <include layout="@layout/layout_week_view" />
+
+        <com.sy007.calendar.widget.CalendarView
+            android:id="@+id/cv_range_calendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_maximum_day"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        sy:cl_dividerHeight="5dp"
-        sy:cl_firstSelectDayText="入住"
-        sy:cl_firstTopMargin="8dp"
-        sy:cl_lastSelectDayText="离店"
-        sy:cl_monthPaddingBottom="20dp"
-        sy:cl_monthPaddingTop="20dp"
-        sy:cl_secondTopMargin="4dp"
-        sy:cl_selectBgDrawable="@drawable/drawable_calendar_select_bg"
-        sy:cl_selectMaxRange="120"
-        sy:cl_selectRangeBgDrawable="@drawable/drawable_calendar_select_range_bg"
-        sy:cl_thirdTopMargin="4dp" />
-</LinearLayout>
+        android:layout_gravity="right|bottom"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="最多可选择10天" />
+</FrameLayout>

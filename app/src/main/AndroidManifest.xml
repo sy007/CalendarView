@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sunyuan.calendarview">
+    package="com.sy007.calendar">
 
     <application
         android:allowBackup="true"
@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RangeSelectActivity" />
-        <activity android:name=".SingleSelectActivity" />
-        <activity android:name=".MainActivity">
-
+        <activity android:name=".simple.single.SingleHorizontalActivity" />
+        <activity android:name=".simple.multiple.MultipleSelectActivity" />
+        <activity android:name=".simple.range.RangeSelectActivity" />
+        <activity android:name=".simple.single.SingleVerticalSelectActivity" />
+        <activity android:name=".simple.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

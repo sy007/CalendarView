@@ -17,9 +17,4 @@
         android:textSize="16sp"
         android:textStyle="bold"
         tools:text="2019年1月" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#E8E8E8" />
 </LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sy007.calendar.simple.single.SingleMonthViewSimple2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mv="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smv_simple2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    mv:dividerHeight="10dp" />

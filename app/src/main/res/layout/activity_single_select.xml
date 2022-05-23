@@ -1,59 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sy="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical">
 
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="当前选择日期:" />
+        <include
+            android:id="@+id/layout_current_single_select_container"
+            layout="@layout/layout_current_single_select_date" />
+        <!--星期-->
+        <include layout="@layout/layout_week_view" />
 
-        <TextView
-            android:id="@+id/tv_current_select_date"
-            android:layout_width="wrap_content"
+        <com.sy007.calendar.widget.CalendarView
+            android:id="@+id/cv_single_calendar_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <!--星期-->
-    <com.sunyuan.calendarlibrary.MonthLableView
-        android:layout_width="match_parent"
+
+    <Button
+        android:id="@+id/btn_calendar_disable"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FAFAFA"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        sy:cl_lableArr="@array/month_view_lable_arr"
-        sy:cl_lableTextColor="#333333"
-        sy:cl_lableTextSize="13sp"
-        sy:cl_lableWeekendTextColor="#FF6E00" />
-    <!--日历-->
-    <com.sunyuan.calendarlibrary.CalendarView
-        android:id="@+id/calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        sy:cl_bottomTextSize="10sp"
-        sy:cl_disTextColor="#BBBBBB"
-        sy:cl_firstSelectDayText="出发"
-        sy:cl_firstTopMargin="8dp"
-        sy:cl_rowHeight="62dp"
-        sy:cl_sameTextColor="#333333"
-        sy:cl_secondTopMargin="4dp"
-        sy:cl_selectBgDrawable="@drawable/drawable_calendar_select_bg"
-        sy:cl_selectTextColor="#FFFFFF"
-        sy:cl_textColor="#333333"
-        sy:cl_textSize="16sp"
-        sy:cl_textStyle="bold"
-        sy:cl_thirdTopMargin="4dp"
-        sy:cl_topTextColor="#FF6E00"
-        sy:cl_topTextSize="10sp"
-        sy:cl_weekendTextColor="#FF6E00" />
-</LinearLayout>
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="日期禁止选择" />
+
+</FrameLayout>

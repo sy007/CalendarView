@@ -1,138 +1,171 @@
-# 仿携程日历控件
-RecycleView实现日历列表,其中每个itemView纯cavas绘制。
----
-## 支持以下功能
-- [x] 日历选中和不可选样式
-- [x] 行间距以及颜色设置
-- [x] 当选择模式为范围选择时，支持最大可以选择多少天
-- [x] 只展示设置的日期范围
-- [x] 月份布局是否悬停展示
-- [x] 单选和范围选择
-- [x] 单选和范围选择自定义样式
-## Demo
-### 单选
-![image](https://ws1.sinaimg.cn/large/006xnoHVly1fzl6io7cnhg30b40m8qth.gif)
-### 范围选择
-![image](https://i.loli.net/2019/01/26/5c4c547a69718.gif)
-## 使用
-### XML文件
-````xml
-    <!--星期-->
-    <com.sunyuan.calendarlibrary.MonthLableView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FAFAFA"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        sy:cl_lableArr="@array/month_view_lable_arr"
-        sy:cl_lableTextColor="#333333"
-        sy:cl_lableTextSize="13sp"
-        sy:cl_lableWeekendTextColor="#FF6E00" />
-    <!--日历-->
-    <com.sunyuan.calendarlibrary.CalendarView
-        android:id="@+id/calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        sy:cl_bottomTextSize="10sp"
-        sy:cl_disTextColor="#BBBBBB"
-        sy:cl_firstSelectDayText="出发"
-        sy:cl_firstTopMargin="8dp"
-        sy:cl_rowHeight="62dp"
-        sy:cl_sameTextColor="#333333"
-        sy:cl_secondTopMargin="4dp"
-        sy:cl_selectBgDrawable="@drawable/drawable_calendar_select_bg"
-        sy:cl_selectTextColor="#FFFFFF"
-        sy:cl_textColor="#333333"
-        sy:cl_textSize="16sp"
-        sy:cl_textStyle="bold"
-        sy:cl_thirdTopMargin="4dp"
-        sy:cl_topTextColor="#FF6E00"
-        sy:cl_topTextSize="10sp"
-        sy:cl_weekendTextColor="#FF6E00" />
-````
+# 自定义日历控件
+RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份很容易的实现自定义绘制。
 
-### XML 自定义属性
+### 1. 支持以下功能
 
-MonthLableView(星期)
+- [x] 日期支持单选，范围选择，多选
+- [x] 日历支持自定义范围展示
+- [x] 日期支持点击事件拦截
+- [x] 日期支持自定义绘制
+- [x] 月份视图支持自定义行高度,间距,间距颜色设置
+- [x] 月份视图支持自定义绘制
+- [x] 月份视图头布局支持悬停
+- [x] 月份视图支持固定行和动态行高度展示 (固定行:6行，动态行:根据当前展示的月份计算)
+- [x] 月份视图支持从一周的某个星期开始
+- [x] 月份视图支持纵向，横向滑动(ViewPager模式)
+### 2. Simple
+
+![image](http://m.qpic.cn/psc?/V11vVsP84HfNn2/bqQfVz5yrrGYSXMvKr.cqfZqDZTE14QcuJmw9w*x3uW9sPUlZ5R7gG4UkZq4hYu95iD96W3.z26xo0p9OlPMGCAQiIbNPdfscbFf50GGr20!/b&bo=cBfGCnAXxgoBByA!&rf=viewer_4)
+### 3. 使用
+
+#### 3.1. 在XML中定义CalendarView 
+
+```xml
+<!--周视图-->
+<com.sy007.calendar.widget.WeekView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    sy:wv_content="@array/week_sunday_to_saturday"
+    sy:wv_text_color="#333333"
+    sy:wv_text_size="13sp" />
+
+<!--日历-->
+<com.sy007.calendar.widget.CalendarView
+    android:id="@+id/cv_single_calendar_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
+
+#### 3.2. 代码中初始化
+
+##### 3.2.1. 设置月份布局
+
+```kotlin
+var selectedDay:CalendarDay?=null
+val cvSingleCalendarView:CalendarView
+...
+//设置月份视图
+cvSingleCalendarView.monthViewBinder = object : MonthViewBinder<SingleMonthViewSimple2> {
+    override fun create(parent: ViewGroup): SingleMonthViewSimple2 {
+        return SingleMonthViewSimple2(parent.context)
+    }
+    override fun onBind(view: SingleMonthViewSimple2, calendarDay: CalendarDay) {
+        view.apply {
+            //设置选中的日期
+            selected = selectedDay
+            onSelectedListener = object : OnSelectedListener {
+                override fun onSelected(selected: CalendarDay) {
+                    selectedDay = selected
+                    //点击日期后滑动到指定日期
+                    cvSingleCalendarView.smoothScrollToMonth(selected)
+                    tvCurrentSelectedDate.text = selected.formatDate("yyyy-MM-dd")
+                }
+            }
+        }
+    }
+}
+```
+
+##### 3.2.2. 构建日历展示范围和样式数据模型
+
+```kotlin
+val startCalendar = Calendar.getInstance().apply {
+    set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
+}
+val endCalendar = Calendar.getInstance().apply {
+    add(Calendar.MONTH, 10)
+    set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+}
+//初始化日历展示范围和样式
+val calendarConfig = CalendarConfig(startCalendar, endCalendar).apply {
+  //横向滑动
+  orientation = RecyclerView.HORIZONTAL
+  //ViewPager滚动模式
+  scrollMode = ScrollMode.PAGE
+  //固定6行高度
+  heightMode = HeightMode.FIXED
+  //月份视图上展示额外日期
+  isDisplayExtraDay = true
+}
+```
+
+##### 3.2.3. 将数据模型设置给日历视图
+
+```kotlin
+cvSingleCalendarView.setUp(calendarConfig)
+```
+
+`SingleMonthViewSimple2`是自定义月份视图，它继承SingleMonthView；你可以在`SingleMonthViewSimple2`中自定义绘制和处理日期是否可以被选中逻辑。
+
+框架内部还内置了`RangeMonthView`(范围选择),`MultipleMonthView`（多选）月份视图基类，根据需求选择一个继承即可。
+
+SingleMonthViewSimple2简略代码如下
+
+```kotlin
+class SingleMonthViewSimple2 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SingleMonthView(context, attrs, defStyleAttr) {
+
+    /**
+     * 拦截日期选中事件，如果拦截则不会回调日期选中事件
+     * 你可以在此方法中拦截不想让用户点击的日期
+     * @return true 表示拦截，false 表示不拦截
+     */
+    override fun onInterceptSelect(calendarDay: CalendarDay): Boolean {
+        return super.onInterceptSelect(calendarDay)
+    }
+
+    /**
+     * 月份日期绘制前调用，你可以在绘制前做一些事
+     */
+    override fun onDrawMonthBefore(canvas: Canvas, calendarDay: CalendarDay) {
+        super.onDrawMonthBefore(canvas, calendarDay)
+
+    }
+
+    /**
+     * 月份日期绘制后调用，你可以在绘制后做一些事
+     */
+    override fun onDrawMonthAfter(canvas: Canvas, calendarDay: CalendarDay) {
+        super.onDrawMonthAfter(canvas, calendarDay)
+    }
+
+    /**
+     * 日期绘制时调用，你可以在这里绘制月份上的日期
+     *
+     * [calendarDay] 待绘制的日期模型
+     * [rect]       日期绘制的范围
+     * [isSelected] 该日期是否是选中状态
+     */
+    override fun onDrawDay(canvas: Canvas, calendarDay: CalendarDay, rect: Rect, isSelected: Boolean) {
+
+    }
+}
+```
+
+### 4. 自定义属性
+
+WeekView(周视图)
 
 |属性 | 类型 | 描述 |
 | :------------------------- | --------- | ---------------------------------- |
-| cl_lableWeekendTextColor | color | 周末字体颜色 |
-| cl_lableTextColor | color | 周一到周五字体颜色 |
-| cl_lableTextSize | color | 字体大小 |
-| cl_lableArr | reference | 星期展示的文案 |
+| wv_weekend_text_color | color | 周末字体颜色 |
+| wv_text_color | color | 默认字体颜色 |
+| wv_text_size | color | 字体大小 |
+| wv_content | reference | 星期展示的文案 |
+| wv_weekend_index | reference | 周末索引(如果要设置周末字体颜色,需要告诉框架周末在wv_content中的索引位置) |
 
-CalendarView(日历)
+XXMonthView(月份视图)
 
-| 属性 | 类型 | 描述 | 
+| 属性 | 类型 | 描述 |
 | :------------------------- | --------- | ---------------------------------- |
-| cl_textColor | color | 日历天字体颜色 |
-| cl_selectTextColor | color | 选中字体颜色 |
-| cl_weekendTextColor | color | 周末字体颜色 |
-| cl_disTextColor | color | 不可选字体颜色 |
-| cl_sameTextColor | color | 今天字体颜色 |
-| cl_topTextColor | color | 节日字体颜色 |
-| cl_selectMaxRange | integer | 限制最大可选多少天 |
-| cl_monthPaddingLeft | dimension | 月份paddingLeft |
-| cl_monthPaddingTop | dimension | 月份paddingTop |
-| cl_monthPaddingRight | dimension | 月份paddingRight |
-| cl_monthPaddingBottom | dimension | 月份paddingBottom |
-| cl_textSize | dimension | 日历天字体大小 |
-| cl_textStyle | flags | 日历天字体样式 |
-| cl_topTextSize | dimension | 节日字体大小 |
-| cl_bottomTextSize | dimension | 选中底部文案字体大小 |
-| cl_firstTopMargin | dimension | 节日距离顶部距离 |
-| cl_secondTopMargin | dimension | 天距离节日底部距离 |
-| cl_thirdTopMargin | dimension | 选中文案距离天底部距离 |
-| cl_dividerHeight | dimension | 日历每一行间距 |
-| cl_dividerColor | color | 日历每一行间距颜色 |
-| cl_firstSelectDayText | string | 第一次选中底部文案 |
-| cl_lastSelectDayText | string | 最后一次选中底部文案 |
-| cl_selectBgDrawable| reference | 选中样式 |
-| cl_selectRangeBgDrawable | reference | 选中范围样式 |
-| cl_rowHeight | dimension | 日历行高 |
+| dividerHeight | dimension | 月份视图行间距高度 |
+| dividerColor | color | 月份视图行间距颜色 |
+| rowHeight | dimension | 月份视图行高度 |
+
+### 5. Api
 
 
-### 代码
-````java
-  CalendarViewWrapper.wrap(calendarView)
-                //设置展示的日期范围
-                .setDateRange(minDate, maxDate)
-                //设置默认选中的日期
-                .setCalendarSelectDay(calendarSelectDay)
-                //选中模式-单选
-                .setSelectionMode(SelectionMode.SINGLE)
-                //设置日历选中事件
-                .setOnCalendarSelectDayListener(new OnCalendarSelectDayListener<CalendarDay>() {
-                    @Override
-                    public void onCalendarSelectDay(CalendarSelectDay<CalendarDay> calendarSelectDay) {
-                        CalendarDay firstSelectDay = calendarSelectDay.getFirstSelectDay();
-                        if (firstSelectDay != null) {
-                            String firstSelectDateStr = formatDate("yyyy-MM-dd", firstSelectDay.toDate());
-                            tvCurrentSelectDate.setText(firstSelectDateStr);
-                        }
-                    }
-                })
-                //月份头是否悬停
-                .setStick(false)
-                //是否展示月份布局
-                .setShowMonthTitleView(true)
-                //设置月份布局回调
-                .setMonthTitleViewCallBack(new MonthTitleViewCallBack() {
-                    @Override
-                    public View getMonthTitleView(int position, Date date) {
-                        View view = View.inflate(SingleSelectActivity.this, R.layout.layout_month_title, null);
-                        TextView tvMonthTitle = view.findViewById(R.id.tv_month_title);
-                        tvMonthTitle.setText(formatDate("yyyy年MM月", date));
-                        return view;
-                    }
-                })
-                .display();
-        //根据指定日期得到position位置
-        int position = calendarView.covertToPosition(calendarSelectDay.getFirstSelectDay());
-        if (position != -1) {
-            //滚动到指定位置
-            calendarView.smoothScrollToPosition(position);
-        }
-````
+
+
+

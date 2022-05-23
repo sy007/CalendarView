@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MonthView">
+        <attr name="dividerHeight" format="dimension" />
+        <attr name="dividerColor" format="color" />
+        <attr name="rowHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="WeekView">
+        <attr name="wv_weekend_text_color" format="color" />
+        <attr name="wv_text_color" format="color" />
+        <attr name="wv_text_size" format="dimension" />
+        <attr name="wv_content" format="reference" />
+        <attr name="wv_weekend_index" format="reference" />
+    </declare-styleable>
+</resources>

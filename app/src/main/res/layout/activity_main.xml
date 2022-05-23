@@ -3,20 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".simple.MainActivity">
 
 
-    <Button
-        android:id="@+id/btn_single_select"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="单选" />
-
-
-    <Button
-        android:id="@+id/btn_range_select"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="范围选择" />
+        android:layout_height="match_parent" />
 </LinearLayout>
