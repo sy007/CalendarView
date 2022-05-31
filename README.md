@@ -16,6 +16,12 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 ### 2. Simple
 
 ![image](http://m.qpic.cn/psc?/V11vVsP84HfNn2/bqQfVz5yrrGYSXMvKr.cqfZqDZTE14QcuJmw9w*x3uW9sPUlZ5R7gG4UkZq4hYu95iD96W3.z26xo0p9OlPMGCAQiIbNPdfscbFf50GGr20!/b&bo=cBfGCnAXxgoBByA!&rf=viewer_4)
+### 2. 集成
+
+```groovy
+implementation 'io.github.sy007:calendar-view:1.0.0'
+```
+
 ### 3. 使用
 
 #### 3.1. 在XML中定义CalendarView 
@@ -163,7 +169,7 @@ XXMonthView(月份视图)
 | dividerColor | color | 月份视图行间距颜色 |
 | rowHeight | dimension | 月份视图行高度 |
 
-### 5. Api
+### 5. [Docs](https://sy007.github.io/calendar-view-docs/html/)
 
 
 
