@@ -3,16 +3,16 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 
 ### 1. 支持以下功能
 
-- [x] 日期支持单选，范围选择，多选
 - [x] 日历支持自定义范围展示
-- [x] 日期支持点击事件拦截
-- [x] 日期支持自定义绘制
 - [x] 月份视图支持自定义行高度,间距,间距颜色设置
 - [x] 月份视图支持自定义绘制
 - [x] 月份视图头布局支持悬停
 - [x] 月份视图支持固定行和动态行高度展示 (固定行:6行，动态行:根据当前展示的月份计算)
 - [x] 月份视图支持从一周的某个星期开始
 - [x] 月份视图支持纵向，横向滑动(ViewPager模式)
+- [x] 日期支持单选，范围选择，多选
+- [x] 日期支持点击事件拦截
+- [x] 日期支持自定义绘制
 ### 2. Simple
 
 ![image](http://m.qpic.cn/psc?/V11vVsP84HfNn2/bqQfVz5yrrGYSXMvKr.cqfZqDZTE14QcuJmw9w*x3uW9sPUlZ5R7gG4UkZq4hYu95iD96W3.z26xo0p9OlPMGCAQiIbNPdfscbFf50GGr20!/b&bo=cBfGCnAXxgoBByA!&rf=viewer_4)
