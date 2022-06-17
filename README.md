@@ -13,7 +13,7 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 - [x] 日期支持单选，范围选择，多选
 - [x] 日期支持点击事件拦截
 - [x] 日期支持自定义绘制
-### 2. Simple
+### 2. Example
 
 ![image](http://m.qpic.cn/psc?/V11vVsP84HfNn2/bqQfVz5yrrGYSXMvKr.cqfZqDZTE14QcuJmw9w*x3uW9sPUlZ5R7gG4UkZq4hYu95iD96W3.z26xo0p9OlPMGCAQiIbNPdfscbFf50GGr20!/b&bo=cBfGCnAXxgoBByA!&rf=viewer_4)
 ### 2. 集成
