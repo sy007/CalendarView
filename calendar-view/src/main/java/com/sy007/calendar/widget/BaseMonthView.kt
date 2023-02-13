@@ -106,7 +106,7 @@ abstract class BaseMonthView @JvmOverloads constructor(context: Context, attrs: 
     init {
         @SuppressLint("CustomViewStyleable")
         val ta = context.obtainStyledAttributes(attrs, R.styleable.MonthView)
-        rowHeight = ta.getFloat(R.styleable.MonthView_rowHeight, Util.dip2px(context, 64f)).toInt()
+        rowHeight = ta.getDimension(R.styleable.MonthView_rowHeight, Util.dip2px(context, 64f)).toInt()
         dividerHeight = ta.getDimension(R.styleable.MonthView_dividerHeight, 0f).toInt()
         dividerColor = ta.getColor(R.styleable.MonthView_dividerColor, 0)
         ta.recycle()

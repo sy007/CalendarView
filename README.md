@@ -19,7 +19,7 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 ### 2. 集成
 
 ```groovy
-implementation 'io.github.sy007:calendar-view:1.0.0'
+implementation 'io.github.sy007:calendar-view:1.0.1'
 ```
 
 ### 3. 使用
@@ -170,6 +170,12 @@ XXMonthView(月份视图)
 | rowHeight | dimension | 月份视图行高度 |
 
 ### 5. [Docs](https://sy007.github.io/calendar-view-docs/html/)
+
+### 6. 更新日志
+
+#### 6.1 v1.0.1
+
+修复获取`BaseMonthView#rowHeight`自定义属性类型不正确问题
 
 
 
