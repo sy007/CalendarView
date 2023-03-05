@@ -6,7 +6,7 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 - [x] 日历支持自定义范围展示
 - [x] 月份视图支持自定义行高度,间距,间距颜色设置
 - [x] 月份视图支持自定义绘制
-- [x] 月份视图头布局支持悬停
+- [x] 月份视图头，脚布局。头布局支持悬停
 - [x] 月份视图支持固定行和动态行高度展示 (固定行:6行，动态行:根据当前展示的月份计算)
 - [x] 月份视图支持从一周的某个星期开始
 - [x] 月份视图支持纵向，横向滑动(ViewPager模式)
@@ -19,7 +19,7 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 ### 2. 集成
 
 ```groovy
-implementation 'io.github.sy007:calendar-view:1.0.1'
+implementation 'io.github.sy007:calendar-view:1.2.0'
 ```
 
 ### 3. 使用
@@ -173,7 +173,11 @@ XXMonthView(月份视图)
 
 ### 6. 更新日志
 
-#### 6.1 v1.0.1
+#### v1.2.0
+
+支持脚布局
+
+#### v1.0.1
 
 修复获取`BaseMonthView#rowHeight`自定义属性类型不正确问题
 
