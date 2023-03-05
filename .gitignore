@@ -3,7 +3,6 @@
 *.ap_
 *.aab
 *.hprof
-calendar-view-docs/
 
 /**/test/*
 

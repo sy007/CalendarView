@@ -1,10 +1,12 @@
 package com.sy007.calendar.simple.single
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -57,9 +59,27 @@ class SingleHorizontalActivity : BaseActivity() {
                     //月份视图上展示额外日期
                     isDisplayExtraDay = true
                 }
+                headerViewBinder = object : MonthHeaderViewBinder<View>() {
+                    override fun create(parent: ViewGroup): View {
+                        return LayoutInflater.from(parent.context).inflate(
+                            R.layout.item_header_view,
+                            parent,
+                            false
+                        )
+                    }
+
+                    override fun onBind(view: View, calendarDay: CalendarDay) {
+                        view.findViewById<TextView>(R.id.tv_header_title).text =
+                            "header:${calendarDay.formatDate("yyyy-MM-dd")}"
+                    }
+                }
                 monthViewBinder = object : MonthViewBinder<SingleMonthViewSimple2> {
                     override fun create(parent: ViewGroup): SingleMonthViewSimple2 {
-                        return LayoutInflater.from(parent.context).inflate(R.layout.layout_single_month_view_simple2, parent, false) as SingleMonthViewSimple2
+                        return LayoutInflater.from(parent.context).inflate(
+                            R.layout.layout_single_month_view_simple2,
+                            parent,
+                            false
+                        ) as SingleMonthViewSimple2
                     }
 
                     override fun onBind(view: SingleMonthViewSimple2, calendarDay: CalendarDay) {
@@ -77,8 +97,23 @@ class SingleHorizontalActivity : BaseActivity() {
                         }
                     }
                 }
+                footerViewBinder = object : MonthFooterViewBinder<View> {
+                    override fun create(parent: ViewGroup): View {
+                        return LayoutInflater.from(parent.context).inflate(
+                            R.layout.item_footer_view,
+                            parent,
+                            false
+                        )
+                    }
+
+                    override fun onBind(view: View, calendarDay: CalendarDay) {
+                        view.findViewById<TextView>(R.id.tv_footer_title).text =
+                            "footer:${calendarDay.formatDate("yyyy-MM-dd")}"
+                    }
+                }
                 //监听月份滚动监听
                 monthScrollListener = object : OnMonthScrollListener {
+                    @SuppressLint("LongLogTag")
                     override fun onScroll(calendarDay: CalendarDay) {
                         Log.d(TAG, calendarDay.toString())
                     }

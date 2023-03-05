@@ -14,8 +14,6 @@ interface ViewBinder<T : View> {
     fun onBind(view: T, calendarDay: CalendarDay)
 }
 
-interface MonthViewBinder<T : BaseMonthView> : ViewBinder<T>
-
 abstract class MonthHeaderViewBinder<T : View> : ViewBinder<T> {
     /**
      * 是否悬停 true 悬停，false 不悬停
@@ -24,3 +22,6 @@ abstract class MonthHeaderViewBinder<T : View> : ViewBinder<T> {
         return false
     }
 }
+
+interface MonthViewBinder<T : BaseMonthView> : ViewBinder<T>
+interface MonthFooterViewBinder<T : View> : ViewBinder<T>

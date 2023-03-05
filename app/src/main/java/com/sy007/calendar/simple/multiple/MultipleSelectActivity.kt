@@ -46,8 +46,8 @@ class MultipleSelectActivity : BaseActivity() {
             }
             headerViewBinder = object : MonthHeaderViewBinder<View>() {
                 override fun onBind(view: View, calendarDay: CalendarDay) {
-                    val tvMonthTitle = view.findViewById<TextView>(R.id.tv_month_title)
-                    tvMonthTitle.text = calendarDay.formatDate("yyyy年MM月")
+                    val tvHeaderTitle = view.findViewById<TextView>(R.id.tv_header_title)
+                    tvHeaderTitle.text = calendarDay.formatDate("yyyy年MM月")
                 }
 
                 override fun isStick(): Boolean {
@@ -55,7 +55,7 @@ class MultipleSelectActivity : BaseActivity() {
                 }
 
                 override fun create(parent: ViewGroup): View {
-                    return LayoutInflater.from(parent.context).inflate(R.layout.layout_calendar_month_title, parent, false)
+                    return LayoutInflater.from(parent.context).inflate(R.layout.item_header_view, parent, false)
                 }
             }
             monthViewBinder = object : MonthViewBinder<MultipleMonthViewSimple> {

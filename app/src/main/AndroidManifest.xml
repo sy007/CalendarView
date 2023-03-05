@@ -9,11 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".simple.single.SingleHorizontalActivity" />
-        <activity android:name=".simple.multiple.MultipleSelectActivity" />
-        <activity android:name=".simple.range.RangeSelectActivity" />
-        <activity android:name=".simple.single.SingleVerticalSelectActivity" />
-        <activity android:name=".simple.MainActivity">
+        <activity
+            android:name=".simple.single.SingleHorizontalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".simple.multiple.MultipleSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".simple.range.RangeSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".simple.single.SingleVerticalSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".simple.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

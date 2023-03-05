@@ -3,6 +3,7 @@ package com.sy007.calendar.widget.help
 import android.content.Context
 import android.graphics.Rect
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -11,9 +12,11 @@ import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.ScrollMode
 import com.sy007.calendar.widget.CalendarView
 
-internal class CalendarLayoutManager(private val calendarView: CalendarView,
-                                     @RecyclerView.Orientation orientation: Int) :
-        LinearLayoutManager(calendarView.context, orientation, false) {
+internal class CalendarLayoutManager(
+    private val calendarView: CalendarView,
+    @RecyclerView.Orientation orientation: Int
+) :
+    LinearLayoutManager(calendarView.context, orientation, false) {
 
     companion object {
         private const val NO_INDEX = -1
@@ -54,9 +57,10 @@ internal class CalendarLayoutManager(private val calendarView: CalendarView,
             calendarView.post { adapter.notifyMonthScrollListener() }
         } else {
             calendarView.post {
-                val vh = calendarView.findViewHolderForAdapterPosition(monthPosition) as? CalendarAdapter.MonthViewHolder
+                val vh =
+                    calendarView.findViewHolderForAdapterPosition(monthPosition) as? MonthViewHolder
                         ?: return@post
-                val offset = calculateDayViewOffsetInParent(day, vh.itemView as BaseMonthView)
+                val offset = calculateDayViewOffsetInParent(day, vh.monthView as BaseMonthView)
                 scrollToPositionWithOffset(monthPosition, -offset)
                 calendarView.post { adapter.notifyMonthScrollListener() }
             }
@@ -65,7 +69,7 @@ internal class CalendarLayoutManager(private val calendarView: CalendarView,
 
 
     private inner class CalendarSmoothScroller(position: Int, val day: CalendarDay?) :
-            LinearSmoothScroller(context) {
+        LinearSmoothScroller(context) {
 
         init {
             targetPosition = position
@@ -95,12 +99,12 @@ internal class CalendarLayoutManager(private val calendarView: CalendarView,
     }
 
     private fun calculateDayViewOffsetInParent(day: CalendarDay, monthView: BaseMonthView): Int {
-        val rect = Rect()
-        monthView.getDayRect(day, rect)
+        val dayRect = Rect()
+        monthView.getDayRect(day, dayRect)
         return if (RecyclerView.VERTICAL == orientation) {
-            rect.top
+            dayRect.top
         } else {
-            rect.left
+            dayRect.left
         }
     }
 }

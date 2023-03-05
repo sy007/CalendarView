@@ -3,14 +3,13 @@ package com.sy007.calendar.widget.help
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.util.forEach
+import androidx.core.view.ViewCompat
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.sy007.calendar.*
-import com.sy007.calendar.OnCalendarDayClickListener
 import com.sy007.calendar.entity.CalendarDay
-import com.sy007.calendar.ScrollMode
 import com.sy007.calendar.utils.Util
 import com.sy007.calendar.widget.BaseMonthView
 import com.sy007.calendar.widget.CalendarView
@@ -20,9 +19,13 @@ import java.util.*
  * @author sy007
  * @date 2019/4/20
  */
-internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
-                               private val monthViewBinder: MonthViewBinder<BaseMonthView>) :
-        RecyclerView.Adapter<CalendarAdapter.MonthViewHolder>(), MonthHeaderViewDecoration.CalendarDayCallback {
+class CalendarAdapter(
+    private val calendarConfig: CalendarConfig,
+    private val headerViewBinder: MonthHeaderViewBinder<View>?,
+    private val monthViewBinder: MonthViewBinder<BaseMonthView>,
+    private val footerViewBinder: MonthFooterViewBinder<View>?
+) :
+    RecyclerView.Adapter<MonthViewHolder>() {
     companion object {
         const val MONTH_IN_YEAR = 12
     }
@@ -37,6 +40,10 @@ internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
         get() = calendarView.layoutManager as CalendarLayoutManager
     private val positionToCalendarDay: SparseArray<CalendarDay> = SparseArray()
     private var isCalendarViewWrapHeight: Boolean? = null
+
+    var headerViewId = ViewCompat.generateViewId()
+    var footerViewId = ViewCompat.generateViewId()
+    var monthViewId = ViewCompat.generateViewId()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -61,29 +68,55 @@ internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthViewHolder {
-        val itemView = monthViewBinder.create(parent)
-        if (itemView.layoutParams == null) {
-            itemView.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT,
-                    ViewGroup.MarginLayoutParams.WRAP_CONTENT)
+        val rootView = LinearLayout(parent.context).apply {
+            layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT
+            )
+            orientation = LinearLayout.VERTICAL
         }
-        return MonthViewHolder(itemView)
+        headerViewBinder?.apply {
+            val headerView = create(rootView)
+            if (headerView.id == View.NO_ID) {
+                headerView.id = headerViewId
+            } else {
+                headerViewId = headerView.id
+            }
+            rootView.addView(headerView, headerView.ifNullCreateLp())
+        }
+
+        monthViewBinder.apply {
+            val monthView = monthViewBinder.create(rootView)
+            if (monthView.id == View.NO_ID) {
+                monthView.id = monthViewId
+            } else {
+                monthViewId = monthView.id
+            }
+            rootView.addView(monthView, monthView.ifNullCreateLp())
+        }
+
+        footerViewBinder?.apply {
+            val footerView = create(rootView)
+            if (footerView.id == View.NO_ID) {
+                footerView.id = footerViewId
+            } else {
+                headerViewId = footerView.id
+            }
+            rootView.addView(footerView, footerView.ifNullCreateLp())
+        }
+        return MonthViewHolder(rootView, this, headerViewBinder, monthViewBinder, footerViewBinder)
     }
 
     override fun onBindViewHolder(holder: MonthViewHolder, position: Int) {
         val calendarDay = computeCalendarDayByPosition(position)
-        holder.monthView.apply {
-            onClickListener = object : OnCalendarDayClickListener {
-                override fun onClick(calendarDay: CalendarDay) {
-                    notifyDataSetChanged()
-                }
-            }
-            init(calendarDay, calendarConfig)
-        }
-        monthViewBinder.onBind(holder.monthView, calendarDay)
+        holder.bindMonth(calendarDay, calendarConfig)
     }
 
     private fun computeCalendarDayByPosition(position: Int): CalendarDay {
-        val year = (startCalendar.get(Calendar.MONTH) + position) / MONTH_IN_YEAR + startCalendar.get(Calendar.YEAR)
+        val year =
+            (startCalendar.get(Calendar.MONTH) + position) / MONTH_IN_YEAR + startCalendar.get(
+                Calendar.YEAR
+            )
         val month = (startCalendar.get(Calendar.MONTH) + (position % MONTH_IN_YEAR)) % MONTH_IN_YEAR
         return if (startCalendar.get(Calendar.YEAR) == year && startCalendar.get(Calendar.MONTH) == month) {
             CalendarDay(year, month, startCalendar.get(Calendar.DAY_OF_MONTH))
@@ -115,20 +148,17 @@ internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
                 visibleCalendarDay = calendarDay
                 if (calendarView.scrollMode == ScrollMode.PAGE) {
                     val isCalendarViewWrapHeight = isCalendarViewWrapHeight
-                            ?: (calendarView.layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT).also {
-                                isCalendarViewWrapHeight = it
-                            }
+                        ?: (calendarView.layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT).also {
+                            isCalendarViewWrapHeight = it
+                        }
                     if (!isCalendarViewWrapHeight) return
-                    val visibleVH = calendarView.findViewHolderForAdapterPosition(visibleItemPos) as? MonthViewHolder
+                    val visibleVH =
+                        calendarView.findViewHolderForAdapterPosition(visibleItemPos) as? MonthViewHolder
                             ?: return
-                    val headerView = calendarView.monthHeaderViewDecoration?.getHeaderViewForPosition(visibleItemPos)
-                    val headerViewVerticalSpace = headerView?.run {
-                        height + getVerticalMargins()
-                    } ?: 0
-                    val itemViewVerticalSpace = (visibleVH.monthView).run {
-                        getRealHeight() + getVerticalMargins()
-                    }
-                    val newHeight = headerViewVerticalSpace + itemViewVerticalSpace
+                    val newHeight =
+                        visibleVH.headerView.getVerticalSpace() +
+                                visibleVH.monthView.getVerticalSpace() +
+                                visibleVH.footerView.getVerticalSpace()
                     if (calendarView.height != newHeight) {
                         calendarView.updateLayoutParams { height = newHeight }
                     }
@@ -137,12 +167,6 @@ internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
         }
     }
 
-
-    class MonthViewHolder(itemView: View) : ViewHolder(itemView) {
-        val monthView: BaseMonthView = itemView as BaseMonthView
-    }
-
-    override fun getCalendarDayByPosition(position: Int): CalendarDay = computeCalendarDayByPosition(position)
 
     fun getAdapterPosition(calendarDay: CalendarDay): Int {
         var result = -1
@@ -155,3 +179,5 @@ internal class CalendarAdapter(private val calendarConfig: CalendarConfig,
         return result
     }
 }
+
+

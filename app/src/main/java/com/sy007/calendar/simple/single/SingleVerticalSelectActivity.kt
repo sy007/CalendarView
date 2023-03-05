@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
@@ -61,8 +62,15 @@ class SingleVerticalSelectActivity : BaseActivity() {
         }
         headerViewBinder = object : MonthHeaderViewBinder<View>() {
             override fun onBind(view: View, calendarDay: CalendarDay) {
-                val tvMonthTitle = view.findViewById<TextView>(R.id.tv_month_title)
-                tvMonthTitle.text = calendarDay.formatDate("yyyy年MM月")
+                view.setOnClickListener {
+                    Toast.makeText(
+                        this@SingleVerticalSelectActivity,
+                        "header:${calendarDay.formatDate("yyyy年MM月")}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                val tvHeaderTitle = view.findViewById<TextView>(R.id.tv_header_title)
+                tvHeaderTitle.text = "header:${calendarDay.formatDate("yyyy年MM月")}"
             }
 
             override fun isStick(): Boolean {
@@ -70,7 +78,8 @@ class SingleVerticalSelectActivity : BaseActivity() {
             }
 
             override fun create(parent: ViewGroup): View {
-                return LayoutInflater.from(parent.context).inflate(R.layout.layout_calendar_month_title, parent, false)
+                return LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_header_view, parent, false)
             }
         }
         monthViewBinder = object : MonthViewBinder<SingleMonthViewSimple1> {
@@ -87,6 +96,7 @@ class SingleVerticalSelectActivity : BaseActivity() {
                     override fun onSelected(selected: CalendarDay) {
                         this@SingleVerticalSelectActivity.selectedDay = selected
                         tvCurrentSelectedDate.text = selected.formatDate("yyyy-MM-dd")
+                        scrollToDay(selected)
                     }
                 }
             }
@@ -101,15 +111,17 @@ class SingleVerticalSelectActivity : BaseActivity() {
     }
 
     private fun showDatePickerDialog(calendar: Calendar, block: (calendar: Calendar) -> Unit) {
-        val dialog = DatePickerDialog(this, { _, year, month, dayOfMonth ->
-            val cl = Calendar.getInstance().apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
-                set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            }
-            block(cl)
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
+        val dialog = DatePickerDialog(
+            this, { _, year, month, dayOfMonth ->
+                val cl = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, year)
+                    set(Calendar.MONTH, month)
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                }
+                block(cl)
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
         dialog.show()
     }
 }
