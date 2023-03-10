@@ -11,11 +11,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sy007.calendar.*
-import com.sy007.calendar.databinding.ActivitySingleHorizontalBinding
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.simple.BaseActivity
 import com.sy007.calendar.simple.utils.LunarCalendar
 import java.util.*
+import com.sy007.calendar.simple.R
+import com.sy007.calendar.simple.databinding.ActivitySingleHorizontalBinding
 
 class SingleHorizontalActivity : BaseActivity() {
 

@@ -4,11 +4,11 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.sunyuan.calendarview"
+        applicationId "com.sy007.calendar.simple"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 31
+        versionCode 3
+        versionName "1.2.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildFeatures {
@@ -26,6 +26,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '11'
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 }
 

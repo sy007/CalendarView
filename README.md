@@ -16,15 +16,19 @@ RecycleView实现,每个itemView cavas绘制，这意味着日历上每个月份
 ### 2. Example
 
 ![image](http://m.qpic.cn/psc?/V11vVsP84HfNn2/bqQfVz5yrrGYSXMvKr.cqfZqDZTE14QcuJmw9w*x3uW9sPUlZ5R7gG4UkZq4hYu95iD96W3.z26xo0p9OlPMGCAQiIbNPdfscbFf50GGr20!/b&bo=cBfGCnAXxgoBByA!&rf=viewer_4)
-### 2. 集成
+#### 扫码体验
 
-```groovy
-implementation 'io.github.sy007:calendar-view:1.2.0'
-```
+![](https://www.pgyer.com/app/qrcode/q5pv)
 
 ### 3. 使用
 
-#### 3.1. 在XML中定义CalendarView 
+#### 3.1. 集成
+
+```groovy
+implementation 'io.github.sy007:calendar-view:1.2.1'
+```
+
+#### 3.2. 在XML中定义CalendarView 
 
 ```xml
 <!--周视图-->
@@ -44,9 +48,9 @@ implementation 'io.github.sy007:calendar-view:1.2.0'
     android:layout_height="wrap_content" />
 ```
 
-#### 3.2. 代码中初始化
+#### 3.3. 代码中初始化
 
-##### 3.2.1. 设置月份布局
+##### 3.3.1. 设置月份布局
 
 ```kotlin
 var selectedDay:CalendarDay?=null
@@ -74,7 +78,7 @@ cvSingleCalendarView.monthViewBinder = object : MonthViewBinder<SingleMonthViewS
 }
 ```
 
-##### 3.2.2. 构建日历展示范围和样式数据模型
+##### 3.3.2. 构建日历展示范围和样式数据模型
 
 ```kotlin
 val startCalendar = Calendar.getInstance().apply {
@@ -97,7 +101,7 @@ val calendarConfig = CalendarConfig(startCalendar, endCalendar).apply {
 }
 ```
 
-##### 3.2.3. 将数据模型设置给日历视图
+##### 3.3.3. 将数据模型设置给日历视图
 
 ```kotlin
 cvSingleCalendarView.setUp(calendarConfig)

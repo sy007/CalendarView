@@ -12,11 +12,11 @@ import androidx.core.content.ContextCompat
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.widget.RangeMonthView
-import com.sy007.calendar.R
 import com.sy007.calendar.simple.utils.LunarCalendar
 import com.sy007.calendar.utils.Util
 import java.util.*
 import kotlin.math.abs
+import com.sy007.calendar.simple.R
 
 /**
  * 范围选择

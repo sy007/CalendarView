@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.sy007.calendar.databinding.ItemSimpleBinding
+import com.sy007.calendar.simple.R
+import com.sy007.calendar.simple.databinding.ItemSimpleBinding
 
 /**
  * Created by sy007 on 5/8/22.

@@ -2,16 +2,9 @@ package com.sy007.calendar.simple.single
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import androidx.core.content.ContextCompat
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.widget.SingleMonthView
-import com.sy007.calendar.R
-import com.sy007.calendar.simple.utils.LunarCalendar
-import com.sy007.calendar.utils.Util
-import java.util.*
-import kotlin.math.abs
 
 /**
  * Created by sy007 on 2021/8/17.

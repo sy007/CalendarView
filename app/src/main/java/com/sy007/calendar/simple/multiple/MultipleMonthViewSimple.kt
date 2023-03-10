@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.widget.MultipleMonthView
 import com.sy007.calendar.isWeekend
-import com.sy007.calendar.R
+import com.sy007.calendar.simple.R
 import com.sy007.calendar.utils.Util
 import java.util.*
 

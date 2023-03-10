@@ -17,7 +17,7 @@ package com.sy007.calendar.simple.utils;
 
 import android.content.Context;
 
-import com.sy007.calendar.R;
+import com.sy007.calendar.simple.R;
 
 
 /**

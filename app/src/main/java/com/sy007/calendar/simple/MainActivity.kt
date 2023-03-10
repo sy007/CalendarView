@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sy007.calendar.databinding.ActivityMainBinding
+import com.sy007.calendar.simple.databinding.ActivityMainBinding
 import com.sy007.calendar.simple.multiple.MultipleSelectActivity
 import com.sy007.calendar.simple.range.RangeSelectActivity
 import com.sy007.calendar.simple.single.SingleHorizontalActivity

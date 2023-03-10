@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sy007.calendar">
+    package="com.sy007.calendar.simple">
 
     <application
         android:allowBackup="true"
@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".simple.single.SingleHorizontalActivity"
+            android:name="com.sy007.calendar.simple.single.SingleHorizontalActivity"
             android:exported="false" />
         <activity
-            android:name=".simple.multiple.MultipleSelectActivity"
+            android:name="com.sy007.calendar.simple.multiple.MultipleSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".simple.range.RangeSelectActivity"
+            android:name="com.sy007.calendar.simple.range.RangeSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".simple.single.SingleVerticalSelectActivity"
+            android:name="com.sy007.calendar.simple.single.SingleVerticalSelectActivity"
             android:exported="false" />
         <activity
-            android:name=".simple.MainActivity"
+            android:name="com.sy007.calendar.simple.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

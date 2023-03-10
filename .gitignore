@@ -3,6 +3,7 @@
 *.ap_
 *.aab
 *.hprof
+.lint-baseline.xml
 
 /**/test/*
 

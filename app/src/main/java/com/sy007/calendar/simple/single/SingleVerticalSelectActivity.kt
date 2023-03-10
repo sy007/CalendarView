@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.widget.CalendarView
-import com.sy007.calendar.R
-import com.sy007.calendar.databinding.ActivitySingleSelectBinding
 import com.sy007.calendar.simple.BaseActivity
 import com.sy007.calendar.utils.Util
 import java.util.*
+import com.sy007.calendar.simple.R
+import com.sy007.calendar.simple.databinding.ActivitySingleSelectBinding
 
 class SingleVerticalSelectActivity : BaseActivity() {
     private var selectedDay: CalendarDay? = null

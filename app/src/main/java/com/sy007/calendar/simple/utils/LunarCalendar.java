@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 package com.sy007.calendar.simple.utils;
-
+import com.sy007.calendar.simple.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
-
-import com.sy007.calendar.R;
 
 import java.util.Calendar;
 import java.util.HashMap;

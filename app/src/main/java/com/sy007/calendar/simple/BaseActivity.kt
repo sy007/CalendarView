@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.sy007.calendar.R
-import com.sy007.calendar.databinding.ActivityBaseBinding
+
+import com.sy007.calendar.simple.databinding.ActivityBaseBinding
 
 
 /**

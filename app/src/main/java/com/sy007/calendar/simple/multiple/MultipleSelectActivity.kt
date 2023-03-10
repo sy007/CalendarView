@@ -13,10 +13,10 @@ import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.ScrollMode
 import com.sy007.calendar.simple.BaseActivity
-import com.sy007.calendar.R
-import com.sy007.calendar.databinding.ActivityMultipleSelectBinding
 import com.sy007.calendar.utils.Util
 import java.util.*
+import com.sy007.calendar.simple.databinding.ActivityMultipleSelectBinding
+import com.sy007.calendar.simple.R
 
 class MultipleSelectActivity : BaseActivity() {
     companion object {

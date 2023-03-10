@@ -11,9 +11,9 @@ import androidx.core.content.ContextCompat
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
 import com.sy007.calendar.widget.SingleMonthView
-import com.sy007.calendar.R
 import com.sy007.calendar.utils.Util
 import java.util.*
+import com.sy007.calendar.simple.R
 
 /**
  * Created by sy007 on 2021/8/17.

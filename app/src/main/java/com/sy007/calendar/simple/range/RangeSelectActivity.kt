@@ -13,12 +13,12 @@ import android.widget.Toast
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.*
 import com.sy007.calendar.simple.BaseActivity
-import com.sy007.calendar.R
-import com.sy007.calendar.databinding.ActivityRangeSelectBinding
-import com.sy007.calendar.databinding.DialogInputMaximumDayBinding
 import com.sy007.calendar.simple.utils.LunarCalendar
 import com.sy007.calendar.utils.Util
 import java.util.*
+import com.sy007.calendar.simple.R
+import com.sy007.calendar.simple.databinding.ActivityRangeSelectBinding
+import com.sy007.calendar.simple.databinding.DialogInputMaximumDayBinding
 
 class RangeSelectActivity : BaseActivity() {
     private var maximumDay = 10
