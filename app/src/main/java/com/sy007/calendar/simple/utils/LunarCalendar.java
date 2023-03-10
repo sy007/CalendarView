@@ -18,6 +18,7 @@ package com.sy007.calendar.simple.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.sy007.calendar.R;
@@ -31,7 +32,16 @@ import java.util.Map;
  */
 @SuppressWarnings("all")
 public final class LunarCalendar {
+    /**
+     * 仅支持公历[1900.1.31-2102.1.28]的农历转换
+     */
+    private static final int MIN_YEAR = 1900;
+    private static final int MIN_MONTH = 1;
+    private static final int MIN_DAY = 31;
 
+    private static final int MAX_YEAR = 2102;
+    private static final int MAX_MONTH = 1;
+    private static final int MAX_DAY = 28;
 
     public static void init(Context context) {
         if (MONTH_STR != null) {
@@ -148,8 +158,7 @@ public final class LunarCalendar {
      * 1001 0101 0101 1010 1011 1111
      * 闰九月 农历正月初一对应公历1月31号
      */
-    private static final int[] LUNAR_INFO = {
-            0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,//1900-1909
+    private static final int[] LUNAR_INFO = {0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,//1900-1909
             0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,//1910-1919
             0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,//1920-1929
             0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,//1930-1939
@@ -169,8 +178,7 @@ public final class LunarCalendar {
             0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0,//2070-2079
             0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160,//2080-2089
             0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252,//2090-2099
-            0x0d520
-    };
+            0x0d520};
 
 
     /**
@@ -181,10 +189,8 @@ public final class LunarCalendar {
      * @return 传回农历 year年month月的总天数
      */
     private static int daysInLunarMonth(int year, int month) {
-        if ((LUNAR_INFO[year - 1900] & (0x10000 >> month)) == 0)
-            return 29;
-        else
-            return 30;
+        if ((LUNAR_INFO[year - MIN_YEAR] & (0x10000 >> month)) == 0) return 29;
+        else return 30;
     }
 
     /**
@@ -246,16 +252,19 @@ public final class LunarCalendar {
      * @return 农历节日
      */
     public static String getLunarText(int year, int month, int day) {
+        if (year < MIN_YEAR || year == MIN_YEAR && month <= MIN_MONTH && day < MIN_DAY) {
+            return "";
+        }
+        if (year > MAX_YEAR || year == MAX_YEAR && ((month > MAX_MONTH) || (month <= MAX_MONTH && day > MAX_DAY))) {
+            return "";
+        }
         String termText = LunarCalendar.getSolarTerm(year, month, day);
         String solar = LunarCalendar.gregorianFestival(month, day);
-        if (!TextUtils.isEmpty(solar))
-            return solar;
-        if (!TextUtils.isEmpty(termText))
-            return termText;
+        if (!TextUtils.isEmpty(solar)) return solar;
+        if (!TextUtils.isEmpty(termText)) return termText;
         int[] lunar = LunarUtil.solarToLunar(year, month, day);
         String festival = getTraditionFestival(lunar[0], lunar[1], lunar[2]);
-        if (!TextUtils.isEmpty(festival))
-            return festival;
+        if (!TextUtils.isEmpty(festival)) return festival;
         return LunarCalendar.numToChinese(lunar[1], lunar[2], lunar[3]);
     }
 

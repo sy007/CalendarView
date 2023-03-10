@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.util.forEach
 import androidx.core.view.ViewCompat
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.sy007.calendar.*
 import com.sy007.calendar.entity.CalendarDay
@@ -39,14 +38,15 @@ class CalendarAdapter(
     private val calendarLayoutManager: CalendarLayoutManager
         get() = calendarView.layoutManager as CalendarLayoutManager
     private val positionToCalendarDay: SparseArray<CalendarDay> = SparseArray()
-    private var isCalendarViewWrapHeight: Boolean? = null
 
     var headerViewId = ViewCompat.generateViewId()
     var footerViewId = ViewCompat.generateViewId()
     var monthViewId = ViewCompat.generateViewId()
+    var attached = false
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
+        attached = true
         val count = getItemCount()
         for (position in 0 until count) {
             positionToCalendarDay.put(position, computeCalendarDayByPosition(position))
@@ -100,7 +100,7 @@ class CalendarAdapter(
             if (footerView.id == View.NO_ID) {
                 footerView.id = footerViewId
             } else {
-                headerViewId = footerView.id
+                footerViewId = footerView.id
             }
             rootView.addView(footerView, footerView.ifNullCreateLp())
         }
@@ -134,6 +134,7 @@ class CalendarAdapter(
 
 
     fun notifyMonthScrollListener() {
+        if (!attached) return
         if (calendarView.isAnimating) {
             calendarView.itemAnimator?.isRunning {
                 notifyMonthScrollListener()
@@ -146,22 +147,9 @@ class CalendarAdapter(
             if (calendarDay != visibleCalendarDay) {
                 calendarView.monthScrollListener?.onScroll(calendarDay)
                 visibleCalendarDay = calendarDay
-                if (calendarView.scrollMode == ScrollMode.PAGE) {
-                    val isCalendarViewWrapHeight = isCalendarViewWrapHeight
-                        ?: (calendarView.layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT).also {
-                            isCalendarViewWrapHeight = it
-                        }
-                    if (!isCalendarViewWrapHeight) return
-                    val visibleVH =
-                        calendarView.findViewHolderForAdapterPosition(visibleItemPos) as? MonthViewHolder
-                            ?: return
-                    val newHeight =
-                        visibleVH.headerView.getVerticalSpace() +
-                                visibleVH.monthView.getVerticalSpace() +
-                                visibleVH.footerView.getVerticalSpace()
-                    if (calendarView.height != newHeight) {
-                        calendarView.updateLayoutParams { height = newHeight }
-                    }
+                if (calendarView.scrollMode == ScrollMode.PAGE && calendarView.layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                    val visibleVH = calendarView.findViewHolderForAdapterPosition(visibleItemPos) as? MonthViewHolder ?: return
+                    visibleVH.itemView.requestLayout()
                 }
             }
         }

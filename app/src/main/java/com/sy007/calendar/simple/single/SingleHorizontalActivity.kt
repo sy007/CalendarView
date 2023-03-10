@@ -45,7 +45,7 @@ class SingleHorizontalActivity : BaseActivity() {
                     set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
                 }
                 val endCalendar = Calendar.getInstance().apply {
-                    add(Calendar.MONTH, 10)
+                    add(Calendar.MONTH, 12)
                     set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
                 }
                 //初始化日历展示范围和样式

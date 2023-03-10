@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: "com.vanniktech.maven.publish"
-apply plugin: 'org.jetbrains.dokka'
+//apply plugin: 'org.jetbrains.dokka'
 android {
     compileSdkVersion 31
 
@@ -29,29 +29,28 @@ android {
 }
 
 
-
-dokkaHtml {
-    moduleName.set("calendar-view")
-    outputDirectory.set(file("../calendar-view-docs/html"))
-    dokkaSourceSets {
-        configureEach {
-            // 禁用在线 kotlin-stdlib 文档
-            noStdlibLink.set(false)
-            // 禁用在线JDK文档
-            noJdkLink.set(false)
-            // 禁用在线Android文档 (只在Android项目有效)
-            noAndroidSdkLink.set(false)
-            //是否包含非public的成员
-            includeNonPublic.set(false)
-        }
-    }
-}
-
-tasks.withType(dokkaHtml.getClass()).configureEach {
-    pluginsMapConfiguration.set(
-            ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
-    )
-}
+//dokkaHtml {
+//    moduleName.set("calendar-view")
+//    outputDirectory.set(file("../calendar-view-docs/html"))
+//    dokkaSourceSets {
+//        configureEach {
+//            // 禁用在线 kotlin-stdlib 文档
+//            noStdlibLink.set(false)
+//            // 禁用在线JDK文档
+//            noJdkLink.set(false)
+//            // 禁用在线Android文档 (只在Android项目有效)
+//            noAndroidSdkLink.set(false)
+//            //是否包含非public的成员
+//            includeNonPublic.set(false)
+//        }
+//    }
+//}
+//
+//tasks.withType(dokkaHtml.getClass()).configureEach {
+//    pluginsMapConfiguration.set(
+//            ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
+//    )
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

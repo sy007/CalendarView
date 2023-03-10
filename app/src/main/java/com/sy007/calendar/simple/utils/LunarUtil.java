@@ -93,7 +93,7 @@ public final class LunarUtil {
      * 公历转农历 Solar To Lunar
      *
      * @param year  公历年
-     * @param month 公历月 月份从1开始
+     * @param month 公历月
      * @param day   公历日
      * @return [0]农历年 [1]农历月 [2]农历日 [3]是否闰月 0 false : 1 true
      */
@@ -143,7 +143,6 @@ public final class LunarUtil {
         lunarInt[2] = lunarD;
         return lunarInt;
     }
-
 
     /**
      * 农历转公历
