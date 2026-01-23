@@ -46,13 +46,16 @@ object Util {
     /**
      * 获取两个日期天数差
      */
-    fun betweenDay(c1: Calendar, c2: Calendar): Long {
-        var c1 = c1
-        if (c1.after(c2)) {
-            val c1Time = c1.time
-            c1 = c2
-            c2.time = c1Time
+    fun betweenDay(startCalendar: Calendar, endCalendar: Calendar): Long {
+        var firstCalendar = startCalendar
+        var secondCalendar = endCalendar
+        if (firstCalendar.after(secondCalendar)) {
+            val tempTime = firstCalendar.time
+            firstCalendar = secondCalendar
+            secondCalendar.time = tempTime
         }
-        return (c2.timeInMillis - c1.timeInMillis) / (1000 * 3600 * 24)
+        val timeDifferenceInMillis = secondCalendar.timeInMillis - firstCalendar.timeInMillis
+        val millisecondsPerDay = 1000L * 3600 * 24
+        return timeDifferenceInMillis / millisecondsPerDay
     }
 }
