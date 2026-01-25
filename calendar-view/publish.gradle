@@ -1,0 +1,117 @@
+// 仅在当前Android Library模块中执行
+if (plugins.hasPlugin('com.android.library')) {
+    // 应用必要插件
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    android {
+        // 生成源码包和文档包（Maven Central强制要求）
+        publishing {
+            singleVariant("release") {
+                withJavadocJar()
+                withSourcesJar()
+            }
+        }
+    }
+
+    // 解决Javadoc编译警告导致的失败问题
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        // 适配Android SDK相关类的Javadoc生成
+        if (project.hasProperty('android')) {
+            classpath += project.android.bootClasspath
+        }
+    }
+
+    // 发布核心配置
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // 关联Android release变体
+                from components.release
+
+                // 从模块自身配置读取构件信息（在build.gradle中定义）
+                groupId = project.group ?: "com.yourcompany" // 默认值，建议在build.gradle中覆盖
+                artifactId = project.artifactId ?: project.name
+                version = project.version ?: "1.0.0"
+
+                // POM文件元信息（可在build.gradle中通过ext覆盖）
+                pom {
+                    name = project.ext.getOrDefault("pomName", project.name)
+                    description = project.ext.getOrDefault("pomDescription", "Android Library Component")
+                    url = project.ext.getOrDefault("pomUrl", "https://github.com/yourname/your-project")
+
+                    licenses {
+                        license {
+                            name = "The Apache License, Version 2.0"
+                            url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = project.ext.getOrDefault("developerId", "your-id")
+                            name = project.ext.getOrDefault("developerName", "Your Name")
+                            email = project.ext.getOrDefault("developerEmail", "your-email@example.com")
+                        }
+                    }
+
+                    scm {
+                        connection = project.ext.getOrDefault("scmConnection", "scm:git:git://github.com/yourname/your-project.git")
+                        developerConnection = project.ext.getOrDefault("scmDeveloperConnection", "scm:git:ssh://github.com/yourname/your-project.git")
+                        url = project.ext.getOrDefault("pomUrl", "https://github.com/yourname/your-project")
+                    }
+                }
+            }
+        }
+
+        // 配置Maven Central仓库（读取根目录gradle.properties的敏感信息）
+        repositories {
+            maven {
+                url = uri("https://central.sonatype.com/api/v1/publisher")
+                credentials {
+                    // 关键：通过rootProject读取根目录的gradle.properties
+                    username = rootProject.findProperty("MAVEN_CENTRAL_USERNAME") ?: ""
+                    password = rootProject.findProperty("MAVEN_CENTRAL_TOKEN") ?: ""
+                }
+            }
+        }
+    }
+
+    // GPG签名配置（读取根目录gradle.properties的签名信息）
+    signing {
+        // 仅在发布时执行签名
+        required { project.gradle.taskGraph.hasTask("publish") }
+
+        // 从根目录配置读取GPG信息
+        def signingKeyId = rootProject.findProperty("signing.keyId") ?: ""
+        def signingPassword = rootProject.findProperty("signing.password") ?: ""
+        def signingSecretKeyRingFile = rootProject.findProperty("signing.secretKeyRingFile") ?: ""
+
+        // 安全加载GPG密钥
+        if (signingKeyId && signingPassword && signingSecretKeyRingFile) {
+            def secretKeyFile = new File(signingSecretKeyRingFile)
+            if (secretKeyFile.exists()) {
+                useInMemoryPgpKeys(signingKeyId, signingPassword, secretKeyFile.text)
+                sign publishing.publications.release
+            } else {
+                println "警告：GPG密钥文件不存在 - ${signingSecretKeyRingFile}"
+            }
+        } else {
+            println "警告：GPG签名配置不完整，请检查根目录gradle.properties"
+        }
+    }
+
+    // 签名任务校验
+    tasks.withType(Sign) {
+        onlyIf {
+            rootProject.findProperty("signing.keyId") &&
+                    rootProject.findProperty("signing.password") &&
+                    rootProject.findProperty("signing.secretKeyRingFile") &&
+                    new File(rootProject.findProperty("signing.secretKeyRingFile")).exists()
+        }
+    }
+} else {
+    println "publish.gradle 仅适用于Android Library模块（需应用com.android.library插件）"
+}

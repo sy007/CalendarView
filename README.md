@@ -173,9 +173,11 @@ XXMonthView(月份视图)
 | dividerColor | color | 月份视图行间距颜色 |
 | rowHeight | dimension | 月份视图行高度 |
 
-### 5. [Docs](https://sy007.github.io/calendar-view-docs/html/)
+### 5. 更新日志
 
-### 6. 更新日志
+#### v1.2.2
+
+修复低分辨率下纵向滑动时崩溃问题
 
 #### v1.2.1
 
@@ -188,7 +190,6 @@ XXMonthView(月份视图)
 #### v1.0.1
 
 修复获取`BaseMonthView#rowHeight`自定义属性类型不正确问题
-
 
 
 
